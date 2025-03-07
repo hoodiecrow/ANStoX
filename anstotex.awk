@@ -286,17 +286,21 @@ function render(line) {
         sub(/W{([^{}]+)}{([^{}]+)}/, sprintf("%s\\footnote{See \\%s{https://en.wikipedia.org/wiki/%s}}", wiki[1], hyperref?"url":"texttt", wiki[2]), line)
     }
 
+    # escape $ before inserting math context
     if (match(line, /\$/)) { gsub(/\$/, "\\$", line) }
 
+    # a way to write x to the power of y
     while (match(line, /P{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), pow, /[^{}]+/)
         sub(/P{([^{}]+)}{([^{}]+)}/, sprintf("${%s}^{%s}$", pow[1], pow[2]), line)
     }
 
+    # replace with arrow character
     if (match(line, /===>/)) { gsub(/===>/, "$\\Longrightarrow$", line) }
 
     if (match(line, /==>/)) { gsub(/==>/, "$\\Rightarrow$", line) }
 
+    # escape LaTeX-sensitive characters
     if (match(line, /#/)) { gsub(/#/, "\\#", line) }
 
     if (match(line, /&/)) { gsub(/&/, "\\&", line) }
@@ -304,8 +308,6 @@ function render(line) {
     if (match(line, /_/)) { gsub(/_/, "\\_", line) }
 
     if (match(line, /%/)) { gsub(/%/, "\\%", line) }
-
-    if (match(line, /⇒/)) { gsub(/⇒/, "=>", line) }
 
     return line
 }
