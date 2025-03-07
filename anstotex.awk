@@ -1,11 +1,18 @@
 # see https://www.mgmarlow.com/words/2024-03-23-markdown-awk/
 
-BEGIN { hyperref = 0}
-
 { gsub(/\r/, ""); }
 
-BEGIN { modeline = "[#;] v" "im:" }
+BEGIN {
+	hyperref = 0
+	modeline = "[#;] v" "im:"
+}
 
+# skip any modeline
+$0 ~ modeline { next; }
+
+######################## first part ###########################
+# translate the PR tags to html tables
+# 
 # load the key/values pairs from dict.txt
 # NOTE: NR is equal to FNR only while processing the first file
 NR == FNR {
@@ -41,9 +48,10 @@ function latexify (s) {
     return s
 }
 
-# skip any modeline
-$0 ~ modeline { next; }
-
+########################## second part ############################
+# do simple replacement on entities
+#
+# Hn to LaTeX elements
 /^[Hh]1 / {
     sub(/\n$/, "", $0)
     printf "\\part{%s}\n", substr($0, 4)
@@ -121,13 +129,6 @@ $0 ~ modeline { next; }
     next
 }
 
-$1 == "H9" { print "\\section{Unfinished code in file " FILENAME " line " (FNR+2) "}" ; next }
-
-$1 == "CB("      { in_code_block = 1 ; print "\\begin{lstlisting}" ; next }
-$1 == "CB)"      { in_code_block = 0 ; print "\\end{lstlisting}" ; next }
-in_code_block   { print ; next }
-
-
 $1 == "IX" { printf("\\index{%s}\n", substr($0, 4)) ; next }
 $1 == "IG" { printf("\\includegraphics{%s}\n", substr($2, 2)) ; next }
 $1 == "IF" {
@@ -160,33 +161,46 @@ $1 == "NI" {
     line = sep = ""
     next
 }
-$1 == "BS" { print "\\bigskip" }
 
-$1 == "IT" { if (!init) print "\\begin{itemize}";init = 1; print "\\item " render(substr($0, 3));next }
-init && $1 != "IT" { print "\\end{itemize}"; init = 0; next }
+########################## third part #############################
+# deal with blocks
+#
+# print the CB block
+$1 == "CB(" { in_cb_block = 1 ; print "\\begin{lstlisting}" ; next }
+$1 == "CB)" { in_cb_block = 0 ; print "\\end{lstlisting}" ; next }
+in_cb_block { print ; next }
 
-$1 == "EN" { if (!inen) print "\\begin{enumerate}";inen = 1; print "\\item " render(substr($0, 3));next }
-inen && $1 != "EN" { print "\\end{enumerate}"; inen = 0; next }
-
-$1 == "MD(" { in_md_block = 1 ; print "" ; next }
-$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
-
-in_md_block && /./  { for (i=1; i<=NF; i++) collect($i) }
-in_md_block && /^$/ { flushp() }
-
-$1 == "PT(" { print "\n\\begin{pulledtext}" ; next }
-$1 == "PT)" { print "\\end{pulledtext}\n" ; next }
-
-$1 == "VB(" { in_vb_block = 1 ; print "\\begin{verbatim}" ; next }
-$1 == "VB)" { in_vb_block = 0 ; print "\\end{verbatim}"   ; next }
-in_vb_block { print }
-
+# skip the TT block
 $1 == "TT(" { in_tt_block = 1 ; next }
 $1 == "TT)" { in_tt_block = 0 ; next }
 in_tt_block { next }
 
-END {  }
 
+# bulleted list...
+$1 == "IT" { if (!in_it) print "\\begin{itemize}";in_it = 1; print "\\item " render(substr($0, 3));next }
+in_it && $1 != "IT" { print "\\end{itemize}"; in_it = 0; next }
+# ...and numbered list
+$1 == "EN" { if (!inen) print "\\begin{enumerate}";inen = 1; print "\\item " render(substr($0, 3));next }
+inen && $1 != "EN" { print "\\end{enumerate}"; inen = 0; next }
+
+# text block
+$1 == "MD(" { in_md_block = 1 ; print "" ; next }
+$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
+in_md_block && /./  { for (i=1; i<=NF; i++) collect($i) }
+in_md_block && /^$/ { flushp() }
+
+# aside block
+$1 == "PT(" { print "\n\\begin{pulledtext}" ; next }
+$1 == "PT)" { print "\\end{pulledtext}\n" ; next }
+
+# verbatim block
+$1 == "VB(" { in_vb_block = 1 ; print "\\begin{verbatim}" ; next }
+$1 == "VB)" { in_vb_block = 0 ; print "\\end{verbatim}"   ; next }
+in_vb_block { print ; next }
+
+########################## fourth part #############################
+# formatting functions
+#
 # Concatenate our multi-line string
 function collect(v) {
   line = line sep v
@@ -208,57 +222,65 @@ function render(line) {
     if (match(line, /LBRACE/)) { gsub(/LBRACE/, "\\{", line) }
     if (match(line, /RBRACE/)) { gsub(/RBRACE/, "\\}", line) }
 
+    # bold text
     while (match(line, /B{([^{}]+)}/)) {
         sub(/B{([^{}]+)}/, sprintf("\\textbf{%s}", substr(line, RSTART+2, RLENGTH-3)), line)
     }
     
+    # italic text
     while (match(line, /E{([^{}]+)}/)) {
         sub(/E{([^{}]+)}/, sprintf("\\emph{%s}", substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
+    # keyboard text
     while (match(line, /K{([^{}]+)}/)) {
         sub(/K{([^{}]+)}/, sprintf("\\texttt{%s}", substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
+    # a way to write an index entry
     while (match(line, /I{([^{}]+)}/)) {
         sub(/I{([^{}]+)}/, sprintf("\\index{%s}", substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
+    # footnote
     while (match(line, /F{([^{}]+)}/)) {
         sub(/F{([^{}]+)}/, sprintf("\\footnote{%s}", substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
+    # marginpar
     while (match(line, /M{([^{}]+)}/)) {
         sub(/M{([^{}]+)}/, sprintf("\\marginpar[%s]{%s\\raggedright}", substr(line, RSTART+2, RLENGTH-3), substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
-    while (match(line, /D{([^{}]*)}/)) {
-        sub(/D{([^{}]*)}/, sprintf("\\ldots "), line)
-    }
-
+    # dots
     if (match(line, /\.\.\./)) {
         gsub(/\.\.\./, sprintf("\\ldots "), line)
     }
 
+    # LaTeX
     while (match(line, /\(La\)TeX/)) {
         sub(/\(La\)TeX/, sprintf("\\LaTeX{}"), line)
     }
 
+    # reference
     while (match(line, /R{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
         sub(/R{([^{}]+)}{([^{}]+)}/, sprintf("%s (see page \\pageref{%s})", ref[1], ref[2]), line)
     }
 
+    # reference with keyboard formatting around anchor text
     while (match(line, /S{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
         sub(/S{([^{}]+)}{([^{}]+)}/, sprintf("\\texttt{%s} (see page \\pageref{%s})", ref[1], ref[2]), line)
     }
 
+    # link
     while (match(line, /L{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), link, /[^{}]+/)
         sub(/L{([^{}]+)}{([^{}]+)}/, sprintf("%s\\footnote{See \\%s{%s}}", link[1], hyperref?"url":"texttt", link[2]), line)
     }
 
+    # wikipedia link
     while (match(line, /W{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), wiki, /[^{}]+/)
         sub(/W{([^{}]+)}{([^{}]+)}/, sprintf("%s\\footnote{See \\%s{https://en.wikipedia.org/wiki/%s}}", wiki[1], hyperref?"url":"texttt", wiki[2]), line)
