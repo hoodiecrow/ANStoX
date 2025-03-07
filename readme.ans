@@ -1,0 +1,220 @@
+H1 ANStoX
+
+A set of AWK scripts to convert annotated source to code, tests, and
+documentation.
+
+This method uses one or more K{.ans}F{ANNotated Source} files which are
+filtered through one of the AWK-language filters and mashed together to form a
+document. The idea is that each K{.ans} file contains a number of code snippets,
+each with a short bit of documentation for it, and a number of test cases for
+it.
+
+Examples:
+
+VB(
+awk -f anstocode.awk alpha.ans beta.ans >thefile.scm
+
+awk -f anstotest.awk alpha.ans beta.ans >thefile.test
+
+awk -f anstomd.awk dict.txt alpha.ans beta.ans >README.md
+
+awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
+VB)
+
+In these cases, K{alpha.ans} and K{beta.ans} are source files containing
+documentation tags, test tags, and code tags. The code tags are printed to the
+code file by K{anstocode.awk}, the test tags to the test file by
+K{anstotest.awk}, and the content of the documentation and code tags are
+printed in different ways to the readme document by K{anstomd.awk} and to the
+thedoc document by K{anstotex.awk}. The K{dict.txt} file is a special case
+which will be explained below.
+
+H2 Tags
+
+H3 Documentation text
+
+The K{MD} tag used to be for documentation text. Example:
+
+VB(
+MD(
+This is a short docu text.
+MD)
+VB)
+
+You would start the block with K{MD} and an open parenthesis in the leftmost column,
+then newline and text, newline again and K{MD} and a closing parenthesis.
+
+The contents of the K{MD} tag was processed for styling and output by the
+K{anstomd.awk} and K{anstotex.awk} scripts.
+
+Very recently I got tired of having text omitted because I had forgotten to
+place K{MD} tags around it. So I changed the specification, and the processing,
+to let any text outside of K{CB} and K{TT} tags be documentation text. Just put
+empty lines before and after paragraphs, and in particular end the source file
+with an empty line (otherwise the last paragraph will vanish).
+
+H3 Code
+
+The K{CB} tag is for code, regardless of coding language.
+
+VB(
+CB(
+#include <stdio.h>
+
+int main (void) {
+    printf("Hello, world");
+    return 0;
+}
+CB)
+VB)
+
+The contents of the K{CB} tag is output without further processing by all the
+scripts except K{anstotest.awk}. K{anstomd.awk} and K{anstotex.awk} add elements
+around the tag's output, suitable for presenting code (i.e. triple backticks for
+Markdown, the K{lstlisting} environment for LaTeX).
+
+H3 Verbatim
+
+The K{VB} tag is for text that should be output with no extra processing and
+presented with triple backticks for Markdown, and the K{verbatim} environment
+for LaTeX. The contents of the tag aren't output by K{anstocode.awk} or
+K{anstotest.awk}.
+
+H3 Test cases
+
+The K{TT} tag is used for test case code which will be output by
+K{anstotest.awk} alone. The K{anstotest.awk} script is geared towards the
+K{tcltest} engine, but should be possible to convert to other test engines by
+editing the preamble and postamble in the script.
+
+VB(
+TT(
+::tcltest::test foobar-1.0 {try the foobar} -body {
+   ...
+} -output "..."
+TT)
+VB)
+
+H3 Pulled text
+
+The K{PT} tag is different. In no script is its contents output. Instead, one
+uses K{MD} inside it to get the documentation scripts to output the text. The
+point of using is that it adds formatting around the text within it: for
+Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the
+beginning and end of the K{pulledtext} environment.
+
+H3 Lists
+
+The K{IT} and K{EN} tags E{at the beginning of the line} renders the line as a
+bulleted or a numbered list item, respectively.
+
+Example:
+
+VB(
+IT fee
+IT fie
+IT foe
+VB)
+
+H2 Headings
+
+The headings tags are the same as in html, K{H1} to K{H6}, only you put them at
+the start of the line, with the heading text following. They are translated to
+hash groups for Markdown, and to different heading elements for LaTeX.
+
+VB(
+H1 A title
+VB)
+
+H3 IG, EM and KB
+
+These three beginning of the line tags:
+
+EN import a graphics element (an image)
+EN wrap the entire line in italics elements
+EN wrap the entire line in keyboard font elements
+
+VB(
+IG /images/myimage.png
+
+EM This line will be in italics
+VB)
+
+H3 IF, IX, NI
+
+These tags are mostly useful for translation to LaTeX.
+
+K{IF} imports an image, but puts it in a float and adds a caption.
+
+VB(
+IF /images/myimage.png Look how pretty
+VB)
+
+K{IX} makes an index entry from the text that follows it. K{NI} puts a
+K{\noindent} in front of the line.
+
+H2 Styling
+
+H3 Appearance
+
+K{B}\{ ... \} renders text bold. K{E}\{ ... \} renders text in italics. K{K}\{
+... \} renders text in keyboard font.
+
+H3 Links, footnotes, and references
+
+K{F}\{ ... \} creates a LaTeX footnote, or just a parenthesized bit of text in
+Markdown. K{R}\{ ... \}\{ ... \} inserts a page reference text in LaTeX and a link in Markdown.
+
+VB(
+Lorem ipsum dolor R{sit amet}{toc-label}, consectetur adipiscing elit,
+VB)
+
+Is rendered
+
+VB(
+Lorem ipsum dolor sit amet (see page \pageref{toc-label}), consectetur adipiscing elit,
+VB)
+
+in LaTeX, and 
+
+VB(
+Lorem ipsum dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur adipiscing elit,
+VB)
+
+in Markdown (clearly some personalizing is necessary).
+
+K{S}\{ ... \}\{ ... \} is the same as K{R}, but adds elements for keyboard font around the anchor.
+
+K{L}\{ ... \}\{ ... \} is like K{R}, but for an external link.
+
+VB(
+Lorem ipsum dolor L{sit amet}{http://site/dir/index.html}, consectetur adipiscing elit,
+VB)
+
+Is rendered
+
+VB(
+Lorem ipsum dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur adipiscing elit,
+VB)
+
+in LaTeX, and 
+
+VB(
+Lorem ipsum dolor [sit amet](http://site/dir/index.html), consectetur adipiscing elit,
+VB)
+
+in Markdown.
+
+K{W}\{ ... \}\{ ... \} is like K{L}, but for a link to Wikipedia. The contents
+of the second capture field is supposed to be the part of the URL after
+K{https://en.wikipedia.org/wiki/}.
+
+H3 dict.txt
+
+Is a file containing a dictionary that I use to construct prototype tables for
+procedures in my code. You will probably not need or want it, so just add a
+K{dict.txt} containing the text "foo  ->  bar" or something like that (or just
+take the K{dict.txt} from the repository). With some editing of the AWK
+scripts, the use for it can be removed. I still need it, so I'm not going to
+remove it myself.
+

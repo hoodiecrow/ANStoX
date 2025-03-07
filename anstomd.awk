@@ -51,6 +51,11 @@ function html_textify(str) {
 }
 
 
+# verbatim block
+$1 == "VB(" { in_vb_block = 1 ; print "```" ; next }
+$1 == "VB)" { in_vb_block = 0 ; print "```"   ; next }
+in_vb_block { print ; next }
+
 ########################## second part ############################
 # do simple replacement on entities
 #
@@ -105,20 +110,15 @@ in_it && $1 != "IT" { in_it = 0; next }
 $1 == "EN" { in_en = 1; $1 = "1." ; $0 = render($0) ; print ; next }
 in_en && $1 != "EN" { in_en = 0; next }
 
-# markdown block
-$1 == "MD(" { in_md_block = 1 ; print "" ; next }
-$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
-in_md_block && /./  { for (i=1; i<=NF; i++) collect($i) }
-in_md_block && /^$/ { flushp() }
-
 # in LaTeX filter this is pulled text: an aside
 $1 == "PT(" { print "\n\n---\n" ; next }
 $1 == "PT)" { print "\n\n---\n" ; next }
 
-# verbatim block
-$1 == "VB(" { in_vb_block = 1 ; print "```" ; next }
-$1 == "VB)" { in_vb_block = 0 ; print "```"   ; next }
-in_vb_block { print ; next }
+# markdown block
+$1 == "MD(" { in_md_block = 1 ; print "" ; next }
+$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
+/./  { for (i=1; i<=NF; i++) collect($i) }
+/^$/ { flushp() }
 
 ########################## fourth part #############################
 # formatting functions

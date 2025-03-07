@@ -48,6 +48,11 @@ function latexify (s) {
     return s
 }
 
+# verbatim block
+$1 == "VB(" { in_vb_block = 1 ; print "\\begin{verbatim}" ; next }
+$1 == "VB)" { in_vb_block = 0 ; print "\\end{verbatim}"   ; next }
+in_vb_block { print ; next }
+
 ########################## second part ############################
 # do simple replacement on entities
 #
@@ -183,20 +188,16 @@ in_it && $1 != "IT" { print "\\end{itemize}"; in_it = 0; next }
 $1 == "EN" { if (!inen) print "\\begin{enumerate}";inen = 1; print "\\item " render(substr($0, 3));next }
 inen && $1 != "EN" { print "\\end{enumerate}"; inen = 0; next }
 
-# text block
-$1 == "MD(" { in_md_block = 1 ; print "" ; next }
-$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
-in_md_block && /./  { for (i=1; i<=NF; i++) collect($i) }
-in_md_block && /^$/ { flushp() }
-
 # aside block
 $1 == "PT(" { print "\n\\begin{pulledtext}" ; next }
 $1 == "PT)" { print "\\end{pulledtext}\n" ; next }
 
-# verbatim block
-$1 == "VB(" { in_vb_block = 1 ; print "\\begin{verbatim}" ; next }
-$1 == "VB)" { in_vb_block = 0 ; print "\\end{verbatim}"   ; next }
-in_vb_block { print ; next }
+
+# text block
+$1 == "MD(" { in_md_block = 1 ; print "" ; next }
+$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
+/./  { for (i=1; i<=NF; i++) collect($i) }
+/^$/ { flushp() }
 
 ########################## fourth part #############################
 # formatting functions
