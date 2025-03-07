@@ -2,7 +2,10 @@
 
 { gsub(/\r/, ""); }
 
-BEGIN { modeline = "[#;] v" "im:" }
+BEGIN {
+	baseURL = "https://github.com/hoodiecrow/ConsTcl"
+	modeline = "[#;] v" "im:"
+}
 
 END { print "\n" }
 
@@ -175,13 +178,13 @@ function render(line) {
     # reference
     while (match(line, /R{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
-        sub(/R{([^{}]+)}{([^{}]+)}/, sprintf("[%s](https://github.com/hoodiecrow/ConsTcl#%s)", ref[1], ref[2]), line)
+        sub(/R{([^{}]+)}{([^{}]+)}/, sprintf("[%s](%s#%s)", ref[1], baseURL, ref[2]), line)
     }
 
     # reference with keyboard formatting around anchor text
     while (match(line, /S{([^{}]+)}{([^{}]+)}/)) {
 	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
-        sub(/S{([^{}]+)}{([^{}]+)}/, sprintf("[``%s``](https://github.com/hoodiecrow/ConsTcl#%s)", ref[1], ref[2]), line)
+        sub(/S{([^{}]+)}{([^{}]+)}/, sprintf("[``%s``](%s#%s)", ref[1], baseURL, ref[2]), line)
     }
 
     # link
