@@ -53,8 +53,16 @@ int main (void) {
 }
 CB)
 ```
+```
+#include <stdio.h>
 
-The contents of the `` CB `` tag is output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk `` and `` anstotex.awk `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for LaTeX).
+int main (void) {
+    printf("Hello, world");
+    return 0;
+}
+```
+
+The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk `` and `` anstotex.awk `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for LaTeX).
 
 ### Verbatim
 

@@ -68,7 +68,16 @@ int main (void) {
 CB)
 VB)
 
-The contents of the K{CB} tag is output without further processing by all the
+CB(
+#include <stdio.h>
+
+int main (void) {
+    printf("Hello, world");
+    return 0;
+}
+CB)
+
+The contents of the K{CB} tag are output without further processing by all the
 scripts except K{anstotest.awk}. K{anstomd.awk} and K{anstotex.awk} add elements
 around the tag's output, suitable for presenting code (i.e. triple backticks for
 Markdown, the K{lstlisting} environment for LaTeX).
