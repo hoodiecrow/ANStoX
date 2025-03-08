@@ -102,7 +102,7 @@ H3 Pulled text
 The K{PT} tag is different. In no script is its contents output. Instead, one
 uses K{MD} inside it to get the documentation scripts to output the text. The
 point of using is that it adds formatting around the text within it: for
-Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the
+Markdown it is a preceding and a succeeding horizontal rule; for LaTeX it's the
 beginning and end of the K{pulledtext} environment.
 
 PT)
@@ -184,6 +184,12 @@ H3 Appearance
 
 K{B}\{ ... \} renders text bold. K{E}\{ ... \} renders text in italics. K{K}\{
 ... \} renders text in keyboard font.
+
+VB(
+first I B{was}, then I E{was}, but then I K{was}
+VB)
+
+first I B{was}, then I E{was}, but then I K{was}
 
 H3 Links, footnotes, and references
 

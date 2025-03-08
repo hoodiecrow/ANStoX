@@ -77,7 +77,7 @@ TT)
 
 ### Pulled text
 
-The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the beginning and end of the `` pulledtext `` environment.
+The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for LaTeX it's the beginning and end of the `` pulledtext `` environment.
 
 
 
@@ -152,6 +152,12 @@ IF /images/myimage.png Look how pretty
 ### Appearance
 
 `` B ``{ ... } renders text bold. `` E ``{ ... } renders text in italics. `` K ``{ ... } renders text in keyboard font.
+
+```
+first I B{was}, then I E{was}, but then I K{was}
+```
+
+first I __was__, then I _was_, but then I `` was ``
 
 ### Links, footnotes, and references
 
