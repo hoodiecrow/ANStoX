@@ -144,7 +144,7 @@ VB)
 DL an item LD with a definition.
 DL another item LD with mostly the same definition.
 
-The definition list is faked in Markdown, and is not guaranteed to work everwhere.
+The definition list is faked in Markdown, and is not guaranteed to work everywhere.
 
 H2 Headings
 

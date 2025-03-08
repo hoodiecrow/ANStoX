@@ -118,7 +118,7 @@ with a definition.
 1.  another item  
 with mostly the same definition.
 
-The definition list is faked in Markdown, and is not guaranteed to work everwhere.
+The definition list is faked in Markdown, and is not guaranteed to work everywhere.
 
 ## Headings
 
