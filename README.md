@@ -71,9 +71,15 @@ TT(
 } -output "..."
 TT)
 ```
+
+PT
+
 ### Pulled text
 
 The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the beginning and end of the `` pulledtext `` environment.
+
+
+PT
 
 ### Lists
 
@@ -87,13 +93,31 @@ IT fee
 IT fie
 IT foe
 ```
+* fee
+* fie
+* foe
+
+The `` DL `` tag renders the line as a definition list item. The token LD separates the term from the definition.
+
+```
+DL an item LD with a definition.
+DL another item LD with mostly the same definition.
+```
+1.  an item  
+with a definition.
+1.  another item  
+with mostly the same definition.
+
+The definition list is faked in Markdown, and is not guaranteed to work everwhere.
+
 ## Headings
 
 The headings tags are the same as in html, `` H1 `` to `` H6 ``, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, and to different heading elements for LaTeX.
 
 ```
-H1 A title
+H4 A title
 ```
+#### A title
 ### IG, EM and KB
 
 These three beginning of the line tags:
@@ -106,6 +130,9 @@ IG /images/myimage.png
 
 EM This line will be in italics
 ```
+
+ _This line will be in italics_
+
 ### IF, IX, NI
 
 These tags are mostly useful for translation to LaTeX.

@@ -95,6 +95,8 @@ TT(
 TT)
 VB)
 
+PT
+
 H3 Pulled text
 
 The K{PT} tag is different. In no script is its contents output. Instead, one
@@ -102,6 +104,8 @@ uses K{MD} inside it to get the documentation scripts to output the text. The
 point of using is that it adds formatting around the text within it: for
 Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the
 beginning and end of the K{pulledtext} environment.
+
+PT
 
 H3 Lists
 
@@ -116,6 +120,23 @@ IT fie
 IT foe
 VB)
 
+IT fee
+IT fie
+IT foe
+
+The K{DL} tag renders the line as a definition list item. The token LD separates
+the term from the definition.
+
+VB(
+DL an item LD with a definition.
+DL another item LD with mostly the same definition.
+VB)
+
+DL an item LD with a definition.
+DL another item LD with mostly the same definition.
+
+The definition list is faked in Markdown, and is not guaranteed to work everwhere.
+
 H2 Headings
 
 The headings tags are the same as in html, K{H1} to K{H6}, only you put them at
@@ -123,8 +144,10 @@ the start of the line, with the heading text following. They are translated to
 hash groups for Markdown, and to different heading elements for LaTeX.
 
 VB(
-H1 A title
+H4 A title
 VB)
+
+H4 A title
 
 H3 IG, EM and KB
 
@@ -139,6 +162,8 @@ IG /images/myimage.png
 
 EM This line will be in italics
 VB)
+
+EM This line will be in italics
 
 H3 IF, IX, NI
 
