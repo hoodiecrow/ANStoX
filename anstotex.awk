@@ -185,8 +185,11 @@ in_tt_block { next }
 $1 == "IT" { if (!in_it) print "\\begin{itemize}";in_it = 1; print "\\item " render(substr($0, 3));next }
 in_it && $1 != "IT" { print "\\end{itemize}"; in_it = 0; next }
 # ...and numbered list
-$1 == "EN" { if (!inen) print "\\begin{enumerate}";inen = 1; print "\\item " render(substr($0, 3));next }
-inen && $1 != "EN" { print "\\end{enumerate}"; inen = 0; next }
+$1 == "EN" { if (!in_en) print "\\begin{enumerate}";in_en = 1; print "\\item " render(substr($0, 3));next }
+in_en && $1 != "EN" { print "\\end{enumerate}"; in_en = 0; next }
+# definition list
+$1 == "DL" { if (!in_dl) print "\\begin{description}";in_dl = 1; $1 = "" ; $0 = render($0) ; split($0, deflis, / LD /) ; printf "\\item[%s] %s\n", deflis[1], deflis[2] }
+in_dl && $1 != "DL" { print "\\end{description}"; in_dl = 0; next }
 
 # aside block
 $1 == "PT(" { print "\n\\begin{pulledtext}" ; next }

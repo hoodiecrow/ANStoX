@@ -112,6 +112,9 @@ in_it && $1 != "IT" { in_it = 0; next }
 # ...and numbered list
 $1 == "EN" { in_en = 1; $1 = "1." ; $0 = render($0) ; print ; next }
 in_en && $1 != "EN" { in_en = 0; next }
+# definition list
+$1 == "DL" { in_dl = 1; $1 = "" ; $0 = render($0) ; split($0, deflis, / LD /) ; printf "1. %s  \n%s\n", deflis[1], deflis[2] }
+in_dl && $1 != "DL" { in_dl = 0; next }
 
 # in LaTeX filter this is pulled text: an aside
 $1 == "PT(" { print "\n\n---\n" ; next }
