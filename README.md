@@ -72,14 +72,16 @@ TT(
 TT)
 ```
 
-PT
+
+---
 
 ### Pulled text
 
 The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the beginning and end of the `` pulledtext `` environment.
 
 
-PT
+
+---
 
 ### Lists
 

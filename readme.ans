@@ -95,7 +95,7 @@ TT(
 TT)
 VB)
 
-PT
+PT(
 
 H3 Pulled text
 
@@ -105,7 +105,7 @@ point of using is that it adds formatting around the text within it: for
 Markdown it is a preciding and a succeeding horizontal rule; for LaTeX it's the
 beginning and end of the K{pulledtext} environment.
 
-PT
+PT)
 
 H3 Lists
 
