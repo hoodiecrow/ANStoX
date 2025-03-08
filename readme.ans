@@ -3,7 +3,7 @@ H1 ANStoX
 A set of AWK scripts to convert annotated source to code, tests, and
 documentation.
 
-This method uses one or more K{.ans}F{ANNotated Source} files which are
+This method uses one or more K{.ans}F{ANnotated Source} files which are
 filtered through one of the AWK-language filters and mashed together to form a
 document. The idea is that each K{.ans} file contains a number of code snippets,
 each with a short bit of documentation for it, and a number of test cases for

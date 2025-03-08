@@ -3,7 +3,7 @@
 A set of AWK scripts to convert annotated source to code, tests, and documentation.
 
 
-This method uses one or more `` .ans `` (ANNotated Source) files which are filtered through one of the AWK-language filters and mashed together to form a document. The idea is that each `` .ans `` file contains a number of code snippets, each with a short bit of documentation for it, and a number of test cases for it.
+This method uses one or more `` .ans `` (ANnotated Source) files which are filtered through one of the AWK-language filters and mashed together to form a document. The idea is that each `` .ans `` file contains a number of code snippets, each with a short bit of documentation for it, and a number of test cases for it.
 
 
 Examples:
