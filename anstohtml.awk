@@ -5,7 +5,12 @@
 BEGIN {
 	baseURL = "https://github.com/hoodiecrow/ConsTcl"
 	modeline = "[#;] v" "im:"
-	print "<html>\n<head>\n<title>A HTML document</title>\n</head>\n<body>\n"
+	print "<html>"
+	print "<head>"
+	print "<title>A HTML document</title>"
+	#print "<link rel=\"stylesheet\" href=\"https://cdn.simplecss.org/simple.min.css\">"
+	print "</head>"
+	print "<body>"
 }
 
 END {
@@ -134,7 +139,7 @@ $1 == "PT)" { print "\n<hr>" ; next }
 $1 == "MD(" { in_md_block = 1 ; print "" ; next }
 $1 == "MD)" { in_md_block = 0 ; flushp() ; next }
 /./  { for (i=1; i<=NF; i++) collect($i) }
-/^$/ { flushp() }
+/^$/ { flushp() ; print "<p>"}
 
 ########################## fourth part #############################
 # formatting functions

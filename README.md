@@ -25,6 +25,9 @@ In these cases, `` alpha.ans `` and `` beta.ans `` are source files containing d
 
 Note that the .tex document is incomplete: it needs at least a preamble and a begin for the document, which you will have to supply. It does stick an end document to the end, at least.
 
+
+The code in these scripts grew out of Graham Marlow's [Markdown Rendering with Awk](https://www.mgmarlow.com/words/2024-03-23-markdown-awk/).
+
 ## Tags
 ### Documentation text
 
