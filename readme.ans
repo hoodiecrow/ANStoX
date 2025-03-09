@@ -86,13 +86,13 @@ The contents of the K{CB} tag are output without further processing by all the
 scripts except K{anstotest.awk}. K{anstomd.awk}, K{anstotex.awk}, and
 K{anstohtml} add elements around the tag's output, suitable for presenting code
 (i.e. triple backticks for Markdown, the K{lstlisting} environment for (La)TeX,
-<pre> for html).
+pre for html).
 
 H3 Verbatim
 
 The K{VB} tag is for text that should be output with no extra processing and
 presented with triple backticks for Markdown, the K{verbatim} environment for
-(La)TeX, and <pre> for html. The contents of the tag aren't output by
+(La)TeX, and pre for html. The contents of the tag aren't output by
 K{anstocode.awk} or K{anstotest.awk}.
 
 H3 Test cases

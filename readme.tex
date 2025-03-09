@@ -74,13 +74,13 @@ int main (void) {
 }
 \end{lstlisting}
 
-The contents of the \texttt{CB} tag are output without further processing by all the scripts except \texttt{anstotest.awk}. \texttt{anstomd.awk}, \texttt{anstotex.awk}, and \texttt{anstohtml} add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the \texttt{lstlisting} environment for \LaTeX{}, <pre> for html).
+The contents of the \texttt{CB} tag are output without further processing by all the scripts except \texttt{anstotest.awk}. \texttt{anstomd.awk}, \texttt{anstotex.awk}, and \texttt{anstohtml} add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the \texttt{lstlisting} environment for \LaTeX{}, pre for html).
 
 \section{Verbatim}
 \label{verbatim}
 \index{Verbatim}
 
-The \texttt{VB} tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the \texttt{verbatim} environment for \LaTeX{}, and <pre> for html. The contents of the tag aren't output by \texttt{anstocode.awk} or \texttt{anstotest.awk}.
+The \texttt{VB} tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the \texttt{verbatim} environment for \LaTeX{}, and pre for html. The contents of the tag aren't output by \texttt{anstocode.awk} or \texttt{anstotest.awk}.
 
 \section{Test cases}
 \label{test-cases}

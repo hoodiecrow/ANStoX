@@ -67,11 +67,11 @@ int main (void) {
 }
 ```
 
-The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk ``, `` anstotex.awk ``, and `` anstohtml `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for (La)TeX, <pre> for html).
+The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk ``, `` anstotex.awk ``, and `` anstohtml `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for (La)TeX, pre for html).
 
 ### Verbatim
 
-The `` VB `` tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the `` verbatim `` environment for (La)TeX, and <pre> for html. The contents of the tag aren't output by `` anstocode.awk `` or `` anstotest.awk ``.
+The `` VB `` tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the `` verbatim `` environment for (La)TeX, and pre for html. The contents of the tag aren't output by `` anstocode.awk `` or `` anstotest.awk ``.
 
 ### Test cases
 

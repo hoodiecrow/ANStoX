@@ -73,11 +73,11 @@ int main (void) {
 }
 </pre>
 
-The contents of the <tt>CB</tt> tag are output without further processing by all the scripts except <tt>anstotest.awk</tt>. <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml</tt> add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the <tt>lstlisting</tt> environment for (La)TeX, &lt;pre&gt; for html).
+The contents of the <tt>CB</tt> tag are output without further processing by all the scripts except <tt>anstotest.awk</tt>. <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml</tt> add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the <tt>lstlisting</tt> environment for (La)TeX, pre for html).
 
 <h3>Verbatim</h3>
 
-The <tt>VB</tt> tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the <tt>verbatim</tt> environment for (La)TeX, and &lt;pre&gt; for html. The contents of the tag aren't output by <tt>anstocode.awk</tt> or <tt>anstotest.awk</tt>.
+The <tt>VB</tt> tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the <tt>verbatim</tt> environment for (La)TeX, and pre for html. The contents of the tag aren't output by <tt>anstocode.awk</tt> or <tt>anstotest.awk</tt>.
 
 <h3>Test cases</h3>
 
