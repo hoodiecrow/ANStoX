@@ -16,9 +16,14 @@ awk -f anstotest.awk alpha.ans beta.ans >thefile.test
 awk -f anstomd.awk dict.txt alpha.ans beta.ans >README.md
 
 awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
+
+awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 ```
 
 In these cases, `` alpha.ans `` and `` beta.ans `` are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by `` anstocode.awk ``, the test tags to the test file by `` anstotest.awk ``, and the content of the documentation and code tags are printed in different ways to the readme document by `` anstomd.awk `` and to the thedoc document by `` anstotex.awk ``. The `` dict.txt `` file is a special case which will be explained below.
+
+
+Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply.
 
 ## Tags
 ### Documentation text
@@ -62,15 +67,15 @@ int main (void) {
 }
 ```
 
-The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk `` and `` anstotex.awk `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for LaTeX).
+The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.awk ``. `` anstomd.awk ``, `` anstotex.awk ``, and `` anstohtml `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for (La)TeX, <pre> for html).
 
 ### Verbatim
 
-The `` VB `` tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, and the `` verbatim `` environment for LaTeX. The contents of the tag aren't output by `` anstocode.awk `` or `` anstotest.awk ``.
+The `` VB `` tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the `` verbatim `` environment for (La)TeX, and <pre> for html. The contents of the tag aren't output by `` anstocode.awk `` or `` anstotest.awk ``.
 
 ### Test cases
 
-The `` TT `` tag is used for test case code which will be output by `` anstotest.awk `` alone. The `` anstotest.awk `` script is geared towards the `` tcltest `` engine, but should be possible to convert to other test engines by editing the preamble and postamble in the script.
+The `` TT `` tag is used for test case code which will be output by `` anstotest.awk `` alone. The `` anstotest.awk `` script is geared towards the `` tcltest `` engine, but should be possible to convert to other test engines by editing the BEGIN and END blocks in the script.
 
 ```
 TT(
@@ -85,7 +90,7 @@ TT)
 
 ### Pulled text
 
-The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for LaTeX it's the beginning and end of the `` pulledtext `` environment.
+The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the `` pulledtext `` environment.
 
 
 
@@ -122,7 +127,7 @@ The definition list is faked in Markdown, and is not guaranteed to work everywhe
 
 ## Headings
 
-The headings tags are the same as in html, `` H1 `` to `` H6 ``, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, and to different heading elements for LaTeX.
+The headings tags are the same as in html, `` H1 `` to `` H6 ``, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, to different heading elements for (La)TeX, and to the obvious elements in html.
 
 ```
 H4 A title
@@ -145,7 +150,7 @@ EM This line will be in italics
 
 ### IF, IX, NI
 
-These tags are mostly useful for translation to LaTeX.
+These tags are mostly useful for translation to (La)TeX.
 
 
 `` IF `` imports an image, but puts it in a float and adds a caption.
@@ -169,7 +174,7 @@ first I __was__, then I _was_, but then I `` was ``
 
 ### Links, footnotes, and references
 
-`` F ``{ ... } creates a LaTeX footnote, or just a parenthesized bit of text in Markdown. `` R ``{ ... }{ ... } inserts a page reference text in LaTeX and a link in Markdown.
+`` F ``{ ... } creates a (La)TeX footnote, or just a parenthesized bit of text in Markdown or html. `` R ``{ ... }{ ... } inserts a page reference text in (La)TeX and a link in Markdown or html.
 
 ```
 Lorem ipsum dolor R{sit amet}{toc-label}, consectetur adipiscing elit,
@@ -181,13 +186,19 @@ Is rendered
 Lorem ipsum dolor sit amet (see page \pageref{toc-label}), consectetur adipiscing elit,
 ```
 
-in LaTeX, and
+in (La)TeX,
 
 ```
 Lorem ipsum dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur adipiscing elit,
 ```
 
-in Markdown (clearly some personalizing is necessary).
+in Markdown (clearly some personalizing is necessary), and
+
+```
+Lorem ipsum dolor <a href="https://github.com/hoodiecrow/ConsTcl#toc-label">sit amet</a>, consectetur adipiscing elit,
+```
+
+in html (ditto).
 
 
 `` S ``{ ... }{ ... } is the same as `` R ``, but adds elements for keyboard font around the anchor.
@@ -205,13 +216,19 @@ Is rendered
 Lorem ipsum dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur adipiscing elit,
 ```
 
-in LaTeX, and
+in (La)TeX,
 
 ```
 Lorem ipsum dolor [sit amet](http://site/dir/index.html), consectetur adipiscing elit,
 ```
 
-in Markdown.
+in Markdown, and
+
+```
+Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur adipiscing elit,
+```
+
+in html.
 
 
 `` W ``{ ... }{ ... } is like `` L ``, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after `` https://en.wikipedia.org/wiki/ ``.

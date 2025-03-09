@@ -5,6 +5,10 @@
 BEGIN {
 	hyperref = 0
 	modeline = "[#;] v" "im:"
+	print "\\begin{document}"
+}
+END {
+	print "\\end{document}"
 }
 
 # skip any modeline
@@ -188,7 +192,7 @@ in_it && $1 != "IT" { print "\\end{itemize}"; in_it = 0; next }
 $1 == "EN" { if (!in_en) print "\\begin{enumerate}";in_en = 1; print "\\item " render(substr($0, 3));next }
 in_en && $1 != "EN" { print "\\end{enumerate}"; in_en = 0; next }
 # definition list
-$1 == "DL" { if (!in_dl) print "\\begin{description}";in_dl = 1; $1 = "" ; $0 = render($0) ; split($0, deflis, / LD /) ; printf "\\item[%s] %s\n", deflis[1], deflis[2] }
+$1 == "DL" { if (!in_dl) print "\\begin{description}";in_dl = 1 ; item = render(substr($0, 4)) ; split(item, deflis, / LD /) ; printf "\\item[%s] %s\n", deflis[1], deflis[2] ; next }
 in_dl && $1 != "DL" { print "\\end{description}"; in_dl = 0; next }
 
 # aside block

@@ -1,0 +1,250 @@
+<html>
+<head>
+<title>A HTML document</title>
+</head>
+<body>
+
+<h1>ANStoX</h1>
+
+A set of AWK scripts to convert annotated source to code, tests, and documentation.
+
+
+This method uses one or more <tt>.ans</tt> (ANnotated Source) files which are filtered through one of the AWK-language filters and mashed together to form a document. The idea is that each <tt>.ans</tt> file contains a number of code snippets, each with a short bit of documentation for it, and a number of test cases for it.
+
+
+Examples:
+
+<pre>
+awk -f anstocode.awk alpha.ans beta.ans >thefile.scm
+
+awk -f anstotest.awk alpha.ans beta.ans >thefile.test
+
+awk -f anstomd.awk dict.txt alpha.ans beta.ans >README.md
+
+awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
+
+awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
+</pre>
+
+In these cases, <tt>alpha.ans</tt> and <tt>beta.ans</tt> are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by <tt>anstocode.awk</tt>, the test tags to the test file by <tt>anstotest.awk</tt>, and the content of the documentation and code tags are printed in different ways to the readme document by <tt>anstomd.awk</tt> and to the thedoc document by <tt>anstotex.awk</tt>. The <tt>dict.txt</tt> file is a special case which will be explained below.
+
+
+Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply.
+
+<h2>Tags</h2>
+<h3>Documentation text</h3>
+
+The <tt>MD</tt> tag used to be for documentation text. Example:
+
+<pre>
+MD(
+This is a short docu text.
+MD)
+</pre>
+
+You would start the block with <tt>MD</tt> and an open parenthesis in the leftmost column, then newline and text, newline again and <tt>MD</tt> and a closing parenthesis.
+
+
+The contents of the <tt>MD</tt> tag was processed for styling and output by the <tt>anstomd.awk</tt> and <tt>anstotex.awk</tt> scripts.
+
+
+Very recently I got tired of having text omitted because I had forgotten to place <tt>MD</tt> tags around it. So I changed the specification, and the processing, to let any text outside of <tt>CB</tt> and <tt>TT</tt> tags be documentation text. Just put empty lines before and after paragraphs, and in particular end the source file with an empty line (otherwise the last paragraph will vanish).
+
+<h3>Code</h3>
+
+The <tt>CB</tt> tag is for code, regardless of coding language.
+
+<pre>
+CB(
+#include <stdio.h>
+
+int main (void) {
+    printf("Hello, world");
+    return 0;
+}
+CB)
+</pre>
+<pre>
+#include <stdio.h>
+
+int main (void) {
+    printf("Hello, world");
+    return 0;
+}
+</pre>
+
+The contents of the <tt>CB</tt> tag are output without further processing by all the scripts except <tt>anstotest.awk</tt>. <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml</tt> add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the <tt>lstlisting</tt> environment for (La)TeX, &lt;pre&gt; for html).
+
+<h3>Verbatim</h3>
+
+The <tt>VB</tt> tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the <tt>verbatim</tt> environment for (La)TeX, and &lt;pre&gt; for html. The contents of the tag aren't output by <tt>anstocode.awk</tt> or <tt>anstotest.awk</tt>.
+
+<h3>Test cases</h3>
+
+The <tt>TT</tt> tag is used for test case code which will be output by <tt>anstotest.awk</tt> alone. The <tt>anstotest.awk</tt> script is geared towards the <tt>tcltest</tt> engine, but should be possible to convert to other test engines by editing the BEGIN and END blocks in the script.
+
+<pre>
+TT(
+::tcltest::test foobar-1.0 {try the foobar} -body {
+   ...
+} -output "..."
+TT)
+</pre>
+
+<hr>
+<h3>Pulled text</h3>
+
+The <tt>PT</tt> tag is different. In no script is its contents output. Instead, one uses <tt>MD</tt> inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the <tt>pulledtext</tt> environment.
+
+
+<hr>
+<h3>Lists</h3>
+
+The <tt>IT</tt> and <tt>EN</tt> tags <em>at the beginning of the line</em> renders the line as a bulleted or a numbered list item, respectively.
+
+
+Example:
+
+<pre>
+IT fee
+IT fie
+IT foe
+</pre>
+<ul>
+<li>  fee
+<li>  fie
+<li>  foe
+</ul>
+
+The <tt>DL</tt> tag renders the line as a definition list item. The token LD separates the term from the definition.
+
+<pre>
+DL an item LD with a definition.
+DL another item LD with mostly the same definition.
+</pre>
+<dl>
+<dt> an item</dt><dd>with a definition.
+</dd></dl>
+<dl>
+<dt> another item</dt><dd>with mostly the same definition.
+</dd></dl>
+
+The definition list is faked in Markdown, and is not guaranteed to work everywhere.
+
+<h2>Headings</h2>
+
+The headings tags are the same as in html, <tt>H1</tt> to <tt>H6</tt>, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, to different heading elements for (La)TeX, and to the obvious elements in html.
+
+<pre>
+H4 A title
+</pre>
+<h4>A title</h4>
+<h3>IG, EM and KB</h3>
+
+These three beginning of the line tags:
+
+<ol>
+<li>  import a graphics element (an image)
+<li>  wrap the entire line in italics elements
+<li>  wrap the entire line in keyboard font elements
+</ol>
+<pre>
+IG /images/myimage.png
+
+EM This line will be in italics
+</pre>
+
+<i>This line will be in italics</i>
+
+<h3>IF, IX, NI</h3>
+
+These tags are mostly useful for translation to (La)TeX.
+
+
+<tt>IF</tt> imports an image, but puts it in a float and adds a caption.
+
+<pre>
+IF /images/myimage.png Look how pretty
+</pre>
+
+<tt>IX</tt> makes an index entry from the text that follows it. <tt>NI</tt> puts a <tt>\noindent</tt> in front of the line.
+
+<h2>Styling</h2>
+<h3>Appearance</h3>
+
+<tt>B</tt>{ ... } renders text bold. <tt>E</tt>{ ... } renders text in italics. <tt>K</tt>{ ... } renders text in keyboard font.
+
+<pre>
+first I B{was}, then I E{was}, but then I K{was}
+</pre>
+
+first I <b>was</b>, then I <em>was</em>, but then I <tt>was</tt>
+
+<h3>Links, footnotes, and references</h3>
+
+<tt>F</tt>{ ... } creates a (La)TeX footnote, or just a parenthesized bit of text in Markdown or html. <tt>R</tt>{ ... }{ ... } inserts a page reference text in (La)TeX and a link in Markdown or html.
+
+<pre>
+Lorem ipsum dolor R{sit amet}{toc-label}, consectetur adipiscing elit,
+</pre>
+
+Is rendered
+
+<pre>
+Lorem ipsum dolor sit amet (see page \pageref{toc-label}), consectetur adipiscing elit,
+</pre>
+
+in (La)TeX,
+
+<pre>
+Lorem ipsum dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur adipiscing elit,
+</pre>
+
+in Markdown (clearly some personalizing is necessary), and
+
+<pre>
+Lorem ipsum dolor <a href="https://github.com/hoodiecrow/ConsTcl#toc-label">sit amet</a>, consectetur adipiscing elit,
+</pre>
+
+in html (ditto).
+
+
+<tt>S</tt>{ ... }{ ... } is the same as <tt>R</tt>, but adds elements for keyboard font around the anchor.
+
+
+<tt>L</tt>{ ... }{ ... } is like <tt>R</tt>, but for an external link.
+
+<pre>
+Lorem ipsum dolor L{sit amet}{http://site/dir/index.html}, consectetur adipiscing elit,
+</pre>
+
+Is rendered
+
+<pre>
+Lorem ipsum dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur adipiscing elit,
+</pre>
+
+in (La)TeX,
+
+<pre>
+Lorem ipsum dolor [sit amet](http://site/dir/index.html), consectetur adipiscing elit,
+</pre>
+
+in Markdown, and
+
+<pre>
+Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur adipiscing elit,
+</pre>
+
+in html.
+
+
+<tt>W</tt>{ ... }{ ... } is like <tt>L</tt>, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after <tt>https://en.wikipedia.org/wiki/</tt>.
+
+<h3>dict.txt</h3>
+
+Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a <tt>dict.txt</tt> containing the text "foo -&gt; bar" or something like that (or just take the <tt>dict.txt</tt> from the repository). With some editing of the AWK scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
+
+</body>
+</html>
+
