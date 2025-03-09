@@ -7,6 +7,7 @@ BEGIN {
 	modeline = "[#;] v" "im:"
 }
 END {
+	flushp()
 	print "\\end{document}"
 }
 

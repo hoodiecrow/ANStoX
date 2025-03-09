@@ -9,6 +9,7 @@ BEGIN {
 }
 
 END {
+	flushp()
 	print "</body>\n</html>\n"
 }
 

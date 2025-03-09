@@ -7,7 +7,10 @@ BEGIN {
 	modeline = "[#;] v" "im:"
 }
 
-END { print "\n" }
+END {
+	flushp()
+	print "\n"
+}
 
 # skip any modeline
 $0 ~ modeline { next; }

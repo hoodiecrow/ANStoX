@@ -24,39 +24,37 @@ awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 VB)
 
 In these cases, K{alpha.ans} and K{beta.ans} are source files containing
-documentation tags, test tags, and code tags. The code tags are printed to the
-code file by K{anstocode.awk}, the test tags to the test file by
-K{anstotest.awk}, and the content of the documentation and code tags are
-printed in different ways to the readme document by K{anstomd.awk} and to the
-thedoc document by K{anstotex.awk}. The K{dict.txt} file is a special case
-which will be explained below.
+documentation, test tags, and code tags. The code tags are printed to the code
+file by K{anstocode.awk}, the test tags to the test file by K{anstotest.awk},
+and the documentation and content of the code tags are printed in different
+ways to the readme document by K{anstomd.awk}, to the thedoc document by
+K{anstotex.awk}, and to the thepage document by K{anstohtml.awk}. The
+K{dict.txt} file is a special case which will be explained below.
 
-Note that the .tex document is incomplete: it needs at least a preamble, which
-you will have to supply. It does stick an end document to the end, at least.
+Note that the .tex document is incomplete: it needs at least a preamble and a
+begin for the document, which you will have to supply. It does stick an end
+document to the end, at least.
 
 H2 Tags
 
 H3 Documentation text
 
-The K{MD} tag used to be for documentation text. Example:
+The original conception had an K{MD} tag for documentation text. I was already
+writing this document when I realized that it was better to have the
+documentation text as free text, without any tags. I'm still getting used to
+it, but it's definitely a change for the better.
 
 VB(
-MD(
+
 This is a short docu text.
-MD)
+
 VB)
 
-You would start the block with K{MD} and an open parenthesis in the leftmost column,
-then newline and text, newline again and K{MD} and a closing parenthesis.
+The documentation text is processed for styling and output by the
+K{anstomd.awk}, K{anstotex.awk}, and K{anstohtml.awk} scripts.
 
-The contents of the K{MD} tag was processed for styling and output by the
-K{anstomd.awk} and K{anstotex.awk} scripts.
-
-Very recently I got tired of having text omitted because I had forgotten to
-place K{MD} tags around it. So I changed the specification, and the processing,
-to let any text outside of K{CB} and K{TT} tags be documentation text. Just put
-empty lines before and after paragraphs, and in particular end the source file
-with an empty line (otherwise the last paragraph will vanish).
+Remember to put empty lines before and after paragraphs, otherwise the
+paragraphs will bleed into each other.
 
 H3 Code
 
@@ -114,11 +112,12 @@ PT(
 
 H3 Pulled text
 
-The K{PT} tag is different. In no script is its contents output. Instead, one
-uses K{MD} inside it to get the documentation scripts to output the text. The
-point of using is that it adds formatting around the text within it: for
-Markdown and html it is a preceding and a succeeding horizontal rule; for
-(La)TeX it's the beginning and end of the K{pulledtext} environment.
+The K{PT} tag is different. It isn't treated as a content tag. Instead, one
+puts it around a short range of documentation text. The point of using it is
+that it adds formatting around the text within it: for Markdown and html it is
+a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning
+and end of the K{pulledtext} environment. The end result is a bit of text which
+is marked off, like an aside.
 
 PT)
 
@@ -267,7 +266,13 @@ in html.
 
 K{W}\{ ... \}\{ ... \} is like K{L}, but for a link to Wikipedia. The contents
 of the second capture field is supposed to be the part of the URL after
-K{https://en.wikipedia.org/wiki/}.
+K{https://en.wikipedia.org/wiki/}. Example:
+
+VB(
+W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
+VB)
+
+W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
 
 H3 dict.txt
 
@@ -277,4 +282,3 @@ K{dict.txt} containing the text "foo  ->  bar" or something like that (or just
 take the K{dict.txt} from the repository). With some editing of the AWK
 scripts, the use for it can be removed. I still need it, so I'm not going to
 remove it myself.
-

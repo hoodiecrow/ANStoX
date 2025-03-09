@@ -26,29 +26,26 @@ awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
 awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 </pre>
 
-In these cases, <tt>alpha.ans</tt> and <tt>beta.ans</tt> are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by <tt>anstocode.awk</tt>, the test tags to the test file by <tt>anstotest.awk</tt>, and the content of the documentation and code tags are printed in different ways to the readme document by <tt>anstomd.awk</tt> and to the thedoc document by <tt>anstotex.awk</tt>. The <tt>dict.txt</tt> file is a special case which will be explained below.
+In these cases, <tt>alpha.ans</tt> and <tt>beta.ans</tt> are source files containing documentation, test tags, and code tags. The code tags are printed to the code file by <tt>anstocode.awk</tt>, the test tags to the test file by <tt>anstotest.awk</tt>, and the documentation and content of the code tags are printed in different ways to the readme document by <tt>anstomd.awk</tt>, to the thedoc document by <tt>anstotex.awk</tt>, and to the thepage document by <tt>anstohtml.awk</tt>. The <tt>dict.txt</tt> file is a special case which will be explained below.
 
 
-Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply. It does stick an end document to the end, at least.
+Note that the .tex document is incomplete: it needs at least a preamble and a begin for the document, which you will have to supply. It does stick an end document to the end, at least.
 
 <h2>Tags</h2>
 <h3>Documentation text</h3>
 
-The <tt>MD</tt> tag used to be for documentation text. Example:
+The original conception had an <tt>MD</tt> tag for documentation text. I was already writing this document when I realized that it was better to have the documentation text as free text, without any tags. I'm still getting used to it, but it's definitely a change for the better.
 
 <pre>
-MD(
+
 This is a short docu text.
-MD)
+
 </pre>
 
-You would start the block with <tt>MD</tt> and an open parenthesis in the leftmost column, then newline and text, newline again and <tt>MD</tt> and a closing parenthesis.
+The documentation text is processed for styling and output by the <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml.awk</tt> scripts.
 
 
-The contents of the <tt>MD</tt> tag was processed for styling and output by the <tt>anstomd.awk</tt> and <tt>anstotex.awk</tt> scripts.
-
-
-Very recently I got tired of having text omitted because I had forgotten to place <tt>MD</tt> tags around it. So I changed the specification, and the processing, to let any text outside of <tt>CB</tt> and <tt>TT</tt> tags be documentation text. Just put empty lines before and after paragraphs, and in particular end the source file with an empty line (otherwise the last paragraph will vanish).
+Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
 
 <h3>Code</h3>
 
@@ -94,7 +91,7 @@ TT)
 <hr>
 <h3>Pulled text</h3>
 
-The <tt>PT</tt> tag is different. In no script is its contents output. Instead, one uses <tt>MD</tt> inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the <tt>pulledtext</tt> environment.
+The <tt>PT</tt> tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the <tt>pulledtext</tt> environment. The end result is a bit of text which is marked off, like an aside.
 
 
 <hr>
@@ -239,7 +236,13 @@ Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur
 in html.
 
 
-<tt>W</tt>{ ... }{ ... } is like <tt>L</tt>, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after <tt>https://en.wikipedia.org/wiki/</tt>.
+<tt>W</tt>{ ... }{ ... } is like <tt>L</tt>, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after <tt>https://en.wikipedia.org/wiki/</tt>. Example:
+
+<pre>
+W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
+</pre>
+
+<a href="https://en.wikipedia.org/wiki/Ann_Arbor,_Michigan">Ann Arbor, Michigan</a>
 
 <h3>dict.txt</h3>
 

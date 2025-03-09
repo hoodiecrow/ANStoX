@@ -21,10 +21,10 @@ awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
 awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 \end{verbatim}
 
-In these cases, \texttt{alpha.ans} and \texttt{beta.ans} are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by \texttt{anstocode.awk}, the test tags to the test file by \texttt{anstotest.awk}, and the content of the documentation and code tags are printed in different ways to the readme document by \texttt{anstomd.awk} and to the thedoc document by \texttt{anstotex.awk}. The \texttt{dict.txt} file is a special case which will be explained below.
+In these cases, \texttt{alpha.ans} and \texttt{beta.ans} are source files containing documentation, test tags, and code tags. The code tags are printed to the code file by \texttt{anstocode.awk}, the test tags to the test file by \texttt{anstotest.awk}, and the documentation and content of the code tags are printed in different ways to the readme document by \texttt{anstomd.awk}, to the thedoc document by \texttt{anstotex.awk}, and to the thepage document by \texttt{anstohtml.awk}. The \texttt{dict.txt} file is a special case which will be explained below.
 
 
-Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply. It does stick an end document to the end, at least.
+Note that the .tex document is incomplete: it needs at least a preamble and a begin for the document, which you will have to supply. It does stick an end document to the end, at least.
 
 \chapter{Tags}
 \label{tags}
@@ -32,21 +32,18 @@ Note that the .tex document is incomplete: it needs at least a preamble, which y
 \label{documentation-text}
 \index{Documentation text}
 
-The \texttt{MD} tag used to be for documentation text. Example:
+The original conception had an \texttt{MD} tag for documentation text. I was already writing this document when I realized that it was better to have the documentation text as free text, without any tags. I'm still getting used to it, but it's definitely a change for the better.
 
 \begin{verbatim}
-MD(
+
 This is a short docu text.
-MD)
+
 \end{verbatim}
 
-You would start the block with \texttt{MD} and an open parenthesis in the leftmost column, then newline and text, newline again and \texttt{MD} and a closing parenthesis.
+The documentation text is processed for styling and output by the \texttt{anstomd.awk}, \texttt{anstotex.awk}, and \texttt{anstohtml.awk} scripts.
 
 
-The contents of the \texttt{MD} tag was processed for styling and output by the \texttt{anstomd.awk} and \texttt{anstotex.awk} scripts.
-
-
-Very recently I got tired of having text omitted because I had forgotten to place \texttt{MD} tags around it. So I changed the specification, and the processing, to let any text outside of \texttt{CB} and \texttt{TT} tags be documentation text. Just put empty lines before and after paragraphs, and in particular end the source file with an empty line (otherwise the last paragraph will vanish).
+Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
 
 \section{Code}
 \label{code}
@@ -100,7 +97,7 @@ TT)
 \label{pulled-text}
 \index{Pulled text}
 
-The \texttt{PT} tag is different. In no script is its contents output. Instead, one uses \texttt{MD} inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for \LaTeX{} it's the beginning and end of the \texttt{pulledtext} environment.
+The \texttt{PT} tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for \LaTeX{} it's the beginning and end of the \texttt{pulledtext} environment. The end result is a bit of text which is marked off, like an aside.
 
 \end{pulledtext}
 
@@ -257,7 +254,13 @@ Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur
 in html.
 
 
-\texttt{W}\{ \ldots  \}\{ \ldots  \} is like \texttt{L}, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after \texttt{https://en.wikipedia.org/wiki/}.
+\texttt{W}\{ \ldots  \}\{ \ldots  \} is like \texttt{L}, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after \texttt{https://en.wikipedia.org/wiki/}. Example:
+
+\begin{verbatim}
+W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
+\end{verbatim}
+
+Ann Arbor, Michigan\footnote{See \texttt{https://en.wikipedia.org/wiki/Ann\_Arbor,\_Michigan}}
 
 \section{dict.txt}
 \label{dicttxt}

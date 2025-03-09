@@ -20,29 +20,26 @@ awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
 awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 ```
 
-In these cases, `` alpha.ans `` and `` beta.ans `` are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by `` anstocode.awk ``, the test tags to the test file by `` anstotest.awk ``, and the content of the documentation and code tags are printed in different ways to the readme document by `` anstomd.awk `` and to the thedoc document by `` anstotex.awk ``. The `` dict.txt `` file is a special case which will be explained below.
+In these cases, `` alpha.ans `` and `` beta.ans `` are source files containing documentation, test tags, and code tags. The code tags are printed to the code file by `` anstocode.awk ``, the test tags to the test file by `` anstotest.awk ``, and the documentation and content of the code tags are printed in different ways to the readme document by `` anstomd.awk ``, to the thedoc document by `` anstotex.awk ``, and to the thepage document by `` anstohtml.awk ``. The `` dict.txt `` file is a special case which will be explained below.
 
 
-Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply. It does stick an end document to the end, at least.
+Note that the .tex document is incomplete: it needs at least a preamble and a begin for the document, which you will have to supply. It does stick an end document to the end, at least.
 
 ## Tags
 ### Documentation text
 
-The `` MD `` tag used to be for documentation text. Example:
+The original conception had an `` MD `` tag for documentation text. I was already writing this document when I realized that it was better to have the documentation text as free text, without any tags. I'm still getting used to it, but it's definitely a change for the better.
 
 ```
-MD(
+
 This is a short docu text.
-MD)
+
 ```
 
-You would start the block with `` MD `` and an open parenthesis in the leftmost column, then newline and text, newline again and `` MD `` and a closing parenthesis.
+The documentation text is processed for styling and output by the `` anstomd.awk ``, `` anstotex.awk ``, and `` anstohtml.awk `` scripts.
 
 
-The contents of the `` MD `` tag was processed for styling and output by the `` anstomd.awk `` and `` anstotex.awk `` scripts.
-
-
-Very recently I got tired of having text omitted because I had forgotten to place `` MD `` tags around it. So I changed the specification, and the processing, to let any text outside of `` CB `` and `` TT `` tags be documentation text. Just put empty lines before and after paragraphs, and in particular end the source file with an empty line (otherwise the last paragraph will vanish).
+Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
 
 ### Code
 
@@ -90,7 +87,7 @@ TT)
 
 ### Pulled text
 
-The `` PT `` tag is different. In no script is its contents output. Instead, one uses `` MD `` inside it to get the documentation scripts to output the text. The point of using is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the `` pulledtext `` environment.
+The `` PT `` tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the `` pulledtext `` environment. The end result is a bit of text which is marked off, like an aside.
 
 
 
@@ -231,7 +228,13 @@ Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur
 in html.
 
 
-`` W ``{ ... }{ ... } is like `` L ``, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after `` https://en.wikipedia.org/wiki/ ``.
+`` W ``{ ... }{ ... } is like `` L ``, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after `` https://en.wikipedia.org/wiki/ ``. Example:
+
+```
+W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
+```
+
+[Ann Arbor, Michigan](https://en.wikipedia.org/wiki/Ann_Arbor,_Michigan)
 
 ### dict.txt
 
