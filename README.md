@@ -23,7 +23,7 @@ awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 In these cases, `` alpha.ans `` and `` beta.ans `` are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by `` anstocode.awk ``, the test tags to the test file by `` anstotest.awk ``, and the content of the documentation and code tags are printed in different ways to the readme document by `` anstomd.awk `` and to the thedoc document by `` anstotex.awk ``. The `` dict.txt `` file is a special case which will be explained below.
 
 
-Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply.
+Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply. It does stick an end document to the end, at least.
 
 ## Tags
 ### Documentation text

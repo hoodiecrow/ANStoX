@@ -5,7 +5,6 @@
 BEGIN {
 	hyperref = 0
 	modeline = "[#;] v" "im:"
-	print "\\begin{document}"
 }
 END {
 	print "\\end{document}"
@@ -321,9 +320,9 @@ function render(line) {
 }
 
 function makelabel (str) {
+    gsub(/[[:punct:]]/, "", str)
     gsub(/ /, "-", str)
     str = tolower(str)
-    gsub(/[:.]/, "", str)
     while (str c in labels) {
 	c++
 	str = str c

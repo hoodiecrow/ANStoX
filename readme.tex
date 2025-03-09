@@ -1,4 +1,3 @@
-\begin{document}
 \part{ANStoX}
 \label{anstox}
 
@@ -25,7 +24,7 @@ awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 In these cases, \texttt{alpha.ans} and \texttt{beta.ans} are source files containing documentation tags, test tags, and code tags. The code tags are printed to the code file by \texttt{anstocode.awk}, the test tags to the test file by \texttt{anstotest.awk}, and the content of the documentation and code tags are printed in different ways to the readme document by \texttt{anstomd.awk} and to the thedoc document by \texttt{anstotex.awk}. The \texttt{dict.txt} file is a special case which will be explained below.
 
 
-Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply.
+Note that the .tex document is incomplete: it needs at least a preamble, which you will have to supply. It does stick an end document to the end, at least.
 
 \chapter{Tags}
 \label{tags}
@@ -150,7 +149,7 @@ H4 A title
 \label{a-title}
 \index{A title}
 \section{IG, EM and KB}
-\label{ig,-em-and-kb}
+\label{ig-em-and-kb}
 \index{IG, EM and KB}
 
 These three beginning of the line tags:
@@ -169,7 +168,7 @@ EM This line will be in italics
 \emph{This line will be in italics}
 
 \section{IF, IX, NI}
-\label{if,-ix,-ni}
+\label{if-ix-ni}
 \index{IF, IX, NI}
 
 These tags are mostly useful for translation to \LaTeX{}.
@@ -198,7 +197,7 @@ first I B{was}, then I E{was}, but then I K{was}
 first I \textbf{was}, then I \emph{was}, but then I \texttt{was}
 
 \section{Links, footnotes, and references}
-\label{links,-footnotes,-and-references}
+\label{links-footnotes-and-references}
 \index{Links, footnotes, and references}
 
 \texttt{F}\{ \ldots  \} creates a \LaTeX{} footnote, or just a parenthesized bit of text in Markdown or html. \texttt{R}\{ \ldots  \}\{ \ldots  \} inserts a page reference text in \LaTeX{} and a link in Markdown or html.
