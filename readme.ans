@@ -24,16 +24,23 @@ awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
 VB)
 
 In these cases, K{alpha.ans} and K{beta.ans} are source files containing
-documentation, test tags, and code tags. The code tags are printed to the code
-file by K{anstocode.awk}, the test tags to the test file by K{anstotest.awk},
-and the documentation and content of the code tags are printed in different
-ways to the readme document by K{anstomd.awk}, to the thedoc document by
+documentation, test tags, and code tags.
+
+The code tags are printed to the code file by K{anstocode.awk} and, the test
+tags to the test file by K{anstotest.awk}.
+
+The documentation and content of the code tags are printed in different ways to
+the README document by K{anstomd.awk}, to the thedoc document by
 K{anstotex.awk}, and to the thepage document by K{anstohtml.awk}. The
 K{dict.txt} file is a special case which will be explained below.
 
+PT(
+
 Note that the .tex document is incomplete: it needs at least a preamble and a
-begin for the document, which you will have to supply. It does stick an end
-document to the end, at least.
+begin for the document, which you will have to supply. It does at least stick
+an end-document to the end.
+
+PT)
 
 The code in these scripts grew out of Graham Marlow's L{Markdown Rendering with
 Awk}{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}.
@@ -84,17 +91,19 @@ int main (void) {
 CB)
 
 The contents of the K{CB} tag are output without further processing by all the
-scripts except K{anstotest.awk}. K{anstomd.awk}, K{anstotex.awk}, and
-K{anstohtml} add elements around the tag's output, suitable for presenting code
-(i.e. triple backticks for Markdown, the K{lstlisting} environment for (La)TeX,
-pre for html).
+scripts except K{anstotest.awk}, which does not output it, and
+K{anstohtml.awk}, which does basic htmlification of K{&}, K{<}, and K{>}.
+K{anstomd.awk}, K{anstotex.awk}, and K{anstohtml} add elements around the tag's
+output, suitable for presenting code (i.e. triple backticks for Markdown, the
+K{lstlisting} environment for (La)TeX, pre and code for html).
 
 H3 Verbatim
 
-The K{VB} tag is for text that should be output with no extra processing and
-presented with triple backticks for Markdown, the K{verbatim} environment for
-(La)TeX, and pre for html. The contents of the tag aren't output by
-K{anstocode.awk} or K{anstotest.awk}.
+The K{VB} tag is for text that should be output with no extra processing
+(except basic htmlification by K{anstohtml.awk}) and presented with triple
+backticks for Markdown, the K{verbatim} environment for (La)TeX, and pre for
+html. The contents of the tag aren't output by K{anstocode.awk} or
+K{anstotest.awk}.
 
 H3 Test cases
 
@@ -111,16 +120,22 @@ TT(
 TT)
 VB)
 
+TT(
+::tcltest::test foobar-1.0 {try the foobar} -body {
+   ...
+} -output "..."
+TT)
+
 PT(
 
 H3 Pulled text
 
 The K{PT} tag is different. It isn't treated as a content tag. Instead, one
 puts it around a short range of documentation text. The point of using it is
-that it adds formatting around the text within it: for Markdown and html it is
-a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning
-and end of the K{pulledtext} environment. The end result is a bit of text which
-is marked off, like an aside.
+that it adds formatting around the text within it: for Markdown it is a
+preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and
+end of the K{pulledtext} environment, for html it is the element aside. The end
+result is a bit of text which is marked off, like an aside.
 
 PT)
 

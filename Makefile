@@ -9,8 +9,14 @@ ANSTOSCM  = ./anstoscm.awk
 .PHONY: all
 all: README.md readme.tex readme.html
 
+readme.code: readme.ans
+	tclsh90.exe anstocode.tcl $^ >$@
+
 README.md: readme.ans
-	gawk -f $(ANSTOMD) dict.txt $^ >$@
+	perl anstomd.pl $^ >$@
+
+#README.md: readme.ans
+#	gawk -f $(ANSTOMD) dict.txt $^ >$@
 
 readme.tex: readme.ans
 	gawk -f $(ANSTOTEX) dict.txt $^ >$@

@@ -33,21 +33,21 @@ NR == FNR {
 }
 
 # expand the PR blocks as HTML tables in the remainder file(s)
-$1 == "PR(" { inside_pr_block = 1; next; }
-$1 == "PR)" { inside_pr_block = 0; next; }
-inside_pr_block {
+$1 == "PR(" { insideprblock = 1; next; }
+$1 == "PR)" { insideprblock = 0; next; }
+insideprblock {
 	if (match($0, /;/)) {
 		printf "<table border=1>";
 		th = substr($0, 1, RSTART-1);
-		printf "<thead><tr><th colspan=2 align=\"left\">%s</th></tr></thead>", html_textify(th);
+		printf "<thead><tr><th colspan=2 align=\"left\">%s</th></tr></thead>", htmlify(th);
 		$0 = substr($0, RSTART+RLENGTH);
 		for (i = 1; i <= NF; i += 2) {
 			td1 = ($i == "->" ? "Returns:" : $i);
 			td2 = dict[$(i+1)];
 			if (td1 == "Returns:")
-				printf "<tr><td><i>%s</i></td><td>%s</td></tr>", html_textify(td1), html_textify(td2);
+				printf "<tr><td><i>%s</i></td><td>%s</td></tr>", htmlify(td1), htmlify(td2);
 			else
-				printf "<tr><td>%s</td><td>%s</td></tr>", html_textify(td1), html_textify(td2);
+				printf "<tr><td>%s</td><td>%s</td></tr>", htmlify(td1), htmlify(td2);
 		}
 		print "</table>\n";
 	}
@@ -55,7 +55,7 @@ inside_pr_block {
 }
 
 # minimalist function that encodes a string as HTML text
-function html_textify(str) {
+function htmlify(str) {
 	gsub(/&/, "\\&amp;", str);
 	gsub(/</, "\\&lt;", str);
 	gsub(/>/, "\\&gt;", str);
@@ -63,9 +63,9 @@ function html_textify(str) {
 }
 
 # verbatim block
-$1 == "VB(" { in_vb_block = 1 ; print "<pre>" ; next }
-$1 == "VB)" { in_vb_block = 0 ; print "</pre>"; next }
-in_vb_block { print ; next }
+$1 == "VB(" { invbblock = 1 ; print "<pre>" ; next }
+$1 == "VB)" { invbblock = 0 ; print "</pre>"; next }
+invbblock { $0 = htmlify($0) ; print ; next }
 
 ########################## second part ############################
 # do simple replacement on entities
@@ -99,7 +99,7 @@ $1 == "EM" {
 $1 == "KB" {
     for (i=2; i<=NF; i++) collect($i)
     line = render(line)
-    line = sprintf("<tt>%s</tt>", line)
+    line = sprintf("<kbd>%s</kbd>", line)
     print "\n" line "\n"
     line = sep = ""
     next
@@ -110,34 +110,35 @@ $1 == "NI" { next }
 # deal with blocks
 #
 # print the CB block
-$1 == "CB(" { in_cb_block = 1 ; print "<pre>" ; next }
-$1 == "CB)" { in_cb_block = 0 ; print "</pre>" ; next }
-in_cb_block { print ; next }
+$1 == "CB(" { incbblock = 1 ; print "<pre><code>" ; next }
+$1 == "CB)" { incbblock = 0 ; print "</code></pre>" ; next }
+
+incbblock { $0 = htmlify($0) ; print ; next }
 
 # skip the TT block
-$1 == "TT(" { in_tt_block = 1 ; next }
-$1 == "TT)" { in_tt_block = 0 ; next }
-in_tt_block { next }
+$1 == "TT(" { inttblock = 1 ; next }
+$1 == "TT)" { inttblock = 0 ; next }
+inttblock { next }
 
 
 # bulleted list...
-$1 == "IT" { if (!in_it) print "<ul>";in_it = 1; print "<li> " render(substr($0, 3));next }
-in_it && $1 != "IT" { print "</ul>"; in_it = 0; next }
+$1 == "IT" { if (!init) print "<ul>";init = 1; print "<li> " render(substr($0, 3));next }
+init && $1 != "IT" { print "</ul>"; init = 0; next }
 # ...and numbered list
-$1 == "EN" { if (!in_en) print "<ol>";in_en = 1; print "<li> " render(substr($0, 3));next }
-in_en && $1 != "EN" { print "</ol>"; in_en = 0; next }
+$1 == "EN" { if (!inen) print "<ol>";inen = 1; print "<li> " render(substr($0, 3));next }
+inen && $1 != "EN" { print "</ol>"; inen = 0; next }
 # definition list
-$1 == "DL" { if (!in_dl) print "<dl>";in_dl = 1; $1 = "" ; $0 = render($0) ; split($0, deflis, / LD /) ; printf "<dt>%s</dt><dd>%s\n</dd>", deflis[1], deflis[2] }
-in_dl && $1 != "DL" { print "</dl>"; in_dl = 0; next }
+$1 == "DL" { if (!indl) print "<dl>";indl = 1; $1 = "" ; $0 = render($0) ; split($0, deflis, / LD /) ; printf "<dt>%s</dt><dd>%s\n</dd>", deflis[1], deflis[2] }
+indl && $1 != "DL" { print "</dl>"; indl = 0; next }
 
 # in LaTeX filter this is pulled text: an aside
-$1 == "PT(" { print "\n<hr>" ; next }
-$1 == "PT)" { print "\n<hr>" ; next }
+$1 == "PT(" { print "\n<aside>" ; next }
+$1 == "PT)" { print "\n</aside>" ; next }
 
 
 # text block
-$1 == "MD(" { in_md_block = 1 ; print "" ; next }
-$1 == "MD)" { in_md_block = 0 ; flushp() ; next }
+$1 == "MD(" { inmdblock = 1 ; print "" ; next }
+$1 == "MD)" { inmdblock = 0 ; flushp() ; next }
 /./  { for (i=1; i<=NF; i++) collect($i) }
 /^$/ { flushp() ; print "<p>"}
 
@@ -163,7 +164,7 @@ function render(line) {
     if (match(line, /\\{/)) { gsub(/\\{/, "{", line) }
     if (match(line, /\\}/)) { gsub(/\\}/, "}", line) }
 
-    line = html_textify(line)
+    line = htmlify(line)
 
     # bold text
     while (match(line, /B{([^{}]+)}/)) {
@@ -177,7 +178,7 @@ function render(line) {
 
     # keyboard text
     while (match(line, /K{([^{}]+)}/)) {
-        sub(/K{([^{}]+)}/, sprintf("<tt>%s</tt>", substr(line, RSTART+2, RLENGTH-3)), line)
+        sub(/K{([^{}]+)}/, sprintf("<kbd>%s</kbd>", substr(line, RSTART+2, RLENGTH-3)), line)
     }
 
     # a way to write an index entry
@@ -197,48 +198,35 @@ function render(line) {
 
     # reference
     while (match(line, /R{([^{}]+)}{([^{}]+)}/)) {
-	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
+	#patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
         sub(/R{([^{}]+)}{([^{}]+)}/, sprintf("<a href=\"%s#%s\">%s</a>", baseURL, ref[2], ref[1]), line)
     }
 
     # reference with keyboard formatting around anchor text
     while (match(line, /S{([^{}]+)}{([^{}]+)}/)) {
-	patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
-        sub(/S{([^{}]+)}{([^{}]+)}/, sprintf("<a href=\"%s#%s\"><tt>%s</tt></a>", baseURL, ref[2], ref[1]), line)
+	#patsplit(substr(line, RSTART+2, RLENGTH-3), ref, /[^{}]+/)
+        sub(/S{([^{}]+)}{([^{}]+)}/, sprintf("<a href=\"%s#%s\"><kbd>%s</kbd></a>", baseURL, ref[2], ref[1]), line)
     }
 
     # link
     while (match(line, /L{([^{}]+)}{([^{}]+)}/)) {
-	patsplit(substr(line, RSTART+2, RLENGTH-3), link, /[^{}]+/)
+	#patsplit(substr(line, RSTART+2, RLENGTH-3), link, /[^{}]+/)
         sub(/L{([^{}]+)}{([^{}]+)}/, sprintf("<a href=\"%s\">%s</a>", link[2], link[1]), line)
     }
 
     # wikipedia link
     while (match(line, /W{([^{}]+)}{([^{}]+)}/)) {
-	patsplit(substr(line, RSTART+2, RLENGTH-3), wiki, /[^{}]+/)
+	#patsplit(substr(line, RSTART+2, RLENGTH-3), wiki, /[^{}]+/)
         sub(/W{([^{}]+)}{([^{}]+)}/, sprintf("<a href=\"https://en.wikipedia.org/wiki/%s\">%s</a>", wiki[2], wiki[1]), line)
     }
 
     # a way to write x to the power of y
     while (match(line, /P{([^{}]+)}{([^{}]+)}/)) {
-	patsplit(substr(line, RSTART+2, RLENGTH-3), pow, /[^{}]+/)
+	#patsplit(substr(line, RSTART+2, RLENGTH-3), pow, /[^{}]+/)
         sub(/P{([^{}]+)}{([^{}]+)}/, sprintf("%s<sup>%s</sup>", pow[1], pow[2]), line)
     }
 
     return line
-}
-
-function makelabel (str) {
-    gsub(/ /, "-", str)
-    str = tolower(str)
-    gsub(/[:.]/, "", str)
-    while (str c in labels) {
-	c++
-	str = str c
-    }
-    labels[str] = 1
-    c = ""
-    return str
 }
 
 # Vim: tabstop=4 shiftwidth=4 softtabstop=4 expandtab:
