@@ -57,11 +57,11 @@ def main ():
             else:
                 second = ''
         if (first == 'VB('):
-            print('\\begin{verbatim}')
+            print(r'\begin{verbatim}')
             in_vb = 1
             continue
         if (first == 'VB)'):
-            print('\\end{verbatim}')
+            print(r'\end{verbatim}')
             in_vb = 0
             continue
         if (in_vb):
@@ -78,43 +78,46 @@ def main ():
                 (th, tds) = line.split(';')
             except ValueError:
                 print('FOO', line)
-            print("\\noindent\\begin{tabular}{ |p{1.9cm} p{8cm}| }\n\\hline")
-            print("\\rowcolor[HTML]{CCCCCC} \\multicolumn{2}{|l|}{\\bf ", end="")
+            print(r"\noindent\begin{tabular}{ |p{1.9cm} p{8cm}| }")
+            print(r"\hline")
+            print(r"\rowcolor[HTML]{CCCCCC} \multicolumn{2}{|l|}{\bf ", end="")
             print(f"{th}", end="")
-            print("} \\\\")
+            print(r"} \\")
             for td1, td2 in zip(*[iter(tds.split())]*2):
                 td2 = db[td2]
                 if (td1 == '->'):
-                    print('{\\textit{Returns:}} & {' + latexify(td2) + '} \\\\')
+                    print(r'\textit{Returns:} & ' + latexify(td2) + ' \\\\')
                 else:
-                    print('{' + latexify(td1) + '} & {' + latexify(td2) + '} \\\\')
-            print("\\hline\n\\end{tabular}")
+                    print(latexify(td1) + ' & ' + latexify(td2) + ' \\\\')
+            print(r"\hline")
+            print(r"\end{tabular}")
             continue
         if (h1.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            elt = '\\part{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            elt = render(elt)
+            elt = r'\part{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             continue
         if (h2.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            elt = '\\chapter{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            elt = render(elt)
+            elt = r'\chapter{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             continue
         if (h3.match(first)):
+            lower_case = (fields[0] == 'h3')
             fields = fields[1:]
             str = ' '.join(fields)
-            elt = '\\section{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            idx = '\\index{' + str + '}'
-            elt = render(elt)
+            if lower_case:
+                idx = r'\index{' + str.lower() + '}'
+            else:
+                idx = r'\index{' + str + '}'
+            elt = r'\section{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             print(idx)
@@ -124,14 +127,13 @@ def main ():
             fields = fields[1:]
             str = ' '.join(fields)
             if lower_case:
-                idx = '\\index{' + str.lower() + '}'
+                idx = r'\index{' + str.lower() + '}'
             else:
-                idx = '\\index{' + str + '}'
+                idx = r'\index{' + str + '}'
             for k, v in {'"!': '!', '"@': '@', '"|': '|'}.items():
                 str = str.replace(k, v)
-            elt = '\\subsection{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            elt = render(elt)
+            elt = r'\subsection{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             print(idx)
@@ -141,12 +143,11 @@ def main ():
             fields = fields[1:]
             str = ' '.join(fields)
             if lower_case:
-                idx = '\\index{' + str.lower() + '}'
+                idx = r'\index{' + str.lower() + '}'
             else:
-                idx = '\\index{' + str + '}'
-            elt = '\\subsubsection{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            elt = render(elt)
+                idx = r'\index{' + str + '}'
+            elt = r'\subsubsection{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             print(idx)
@@ -154,54 +155,56 @@ def main ():
         if (h6.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            elt = '\\paragraph{' + str + '}'
-            lbl = '\\label{' + makelabel(str) + '}'
-            elt = render(elt)
+            elt = r'\paragraph{' + str + '}'
+            lbl = r'\label{' + makelabel(str) + '}'
             print(elt)
             print(lbl)
             continue
         if first == 'IX':
-            print('\\index{' + line[3:] + '}')
+            print(r'\index{' + line[3:] + '}')
             continue
         if first == 'IG':
-            print("\\includegraphics{" + second[1:] + "}")
+            print(r"\includegraphics{" + second[1:] + "}")
             continue
         if first == 'IF':
             fields = fields[2:]
             caption = ' '.join(fields)
-            print("\\begin{figure}[h!]", end="")
-            print("\\includegraphics{" + second[1:] + "}", end="")
-            print("\\captionsetup{labelformat=empty}", end="")
-            print("\\caption{" + caption + "}", end="")
-            print("\\label{fig:" + makelabel(caption) + "}", end="")
-            print("\\end{figure}")
+            print(r"\begin{figure}[h!]", end="")
+            print(r"\includegraphics{" + second[1:] + "}", end="")
+            print(r"\captionsetup{labelformat=empty}", end="")
+            print(r"\caption{" + caption + "}", end="")
+            print(r"\label{fig:" + makelabel(caption) + "}", end="")
+            print(r"\end{figure}")
             caption = ''
             continue
         if first == 'EM':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('\\emph{' + str + '}')
+            print('')
+            print(r'\emph{' + str + '}')
             continue
         if first == 'KB':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('\\texttt{' + str + '}')
+            print('')
+            print(r'\texttt{' + str + '}')
             continue
         if first == 'NI':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print("\\noindent " + str)
+            print('')
+            print(r"\noindent " + str)
             continue
         if first == 'CB(':
             in_cb = 1
-            print("\\begin{lstlisting}")
+            print(r"\begin{lstlisting}")
             continue
         if first == 'CB)':
             in_cb = 0
-            print("\\end{lstlisting}")
+            print(r"\end{lstlisting}")
             continue
         if in_cb:
             print(line)
@@ -216,49 +219,51 @@ def main ():
             continue
         if first == 'IT':
             if not in_it:
-                print("\\begin{itemize}")
+                print(r"\begin{itemize}")
             in_it = 1
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print("\\item " + str)
+            print(r"\item " + str)
             continue
         if in_it and first != 'IT':
-            print("\\end{itemize}")
+            print(r"\end{itemize}")
             in_it = 0
             continue
         if first == 'EN':
-            if not in_it:
-                print("\\begin{enumerate}")
+            if not in_en:
+                print(r"\begin{enumerate}")
             in_en = 1
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print("\\item " + str)
+            print(r"\item " + str)
             continue
         if in_en and first != 'EN':
-            print("\\end{enumerate}")
+            print(r"\end{enumerate}")
             in_en = 0
             continue
         if first == 'DL':
             if not in_dl:
-                print("\\begin{description}")
+                print(r"\begin{description}")
             in_dl = 1
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
             label, deftext = re.split(r' LD ', str)
-            print(f'\\item[{label}] {deftext}')
+            print(rf'\item[{label}] {deftext}')
             continue
         if in_dl and first != 'DL':
-            print("\\end{description}")
+            print(r"\end{description}")
             in_dl = 0
             continue
         if first == 'PT(':
-            print("\n\\begin{pulledtext}")
+            print("\n")
+            print(r"\begin{pulledtext}")
             continue
         if first == 'PT)':
-            print("\\end{pulledtext}\n")
+            print(r"\end{pulledtext}")
+            print("\n")
             continue
         if line == '':
             flushp()
@@ -294,70 +299,73 @@ def render (str):
     global l
     global w
     global p
-    for x, y in {'\{': 'LBRACE', '\}': 'RBRACE'}.items():
+    for x, y in {r'\{': 'LBRACE', r'\}': 'RBRACE'}.items():
         str = str.replace(x, y)
-    str = b.sub(brepl, str, 9)
-    str = e.sub(erepl, str, 9)
-    str = k.sub(krepl, str, 12)
-    str = i.sub(irepl, str, 6)
-    str = f.sub(frepl, str, 6)
-    str = re.sub('\.\.\.', '\\ldots ', str)
-    str = re.sub('(La)TeX', '\\LaTeX ', str)
-    str = r.sub(rrepl, str, 9)
-    str = s.sub(srepl, str, 9)
-    str = l.sub(lrepl, str, 9)
-    str = w.sub(wrepl, str, 9)
-    str = re.sub('\$', '\\$', str)
-    str = p.sub(prepl, str, 9)
-    str = re.sub('===>', '$\Longrightarrow\$', str)
-    str = re.sub('==>', '$\Rightarrow\$', str)
-    str = re.sub('#', '\\#', str)
-    str = re.sub('&', '\\&', str)
-    str = re.sub('_', '\\_', str)
-    str = re.sub('%', '\\%', str)
+    str = re.sub(r'\\', r'\\textbackslash ', str)
+    for x, y in {'LBRACE': r'\{', 'RBRACE': r'\}'}.items():
+        str = str.replace(x, y)
+    str = b.sub(brepl, str, 20)
+    str = e.sub(erepl, str, 20)
+    str = k.sub(krepl, str, 30)
+    str = i.sub(irepl, str, 10)
+    str = f.sub(frepl, str, 10)
+    str = re.sub('\.\.\.', r'\\ldots ', str)
+    str = re.sub('(La)TeX', r'\\LaTeX ', str)
+    str = r.sub(rrepl, str, 20)
+    str = s.sub(srepl, str, 20)
+    str = l.sub(lrepl, str, 20)
+    str = w.sub(wrepl, str, 20)
+    str = re.sub('\$', r'\$', str)
+    str = p.sub(prepl, str, 20)
+    str = re.sub('===>', r'$\\Longrightarrow$', str)
+    str = re.sub('==>', r'$\\Rightarrow$', str)
+    str = re.sub('#', r'\#', str)
+    str = re.sub('&', r'\&', str)
+    str = re.sub('_', r'\_', str)
+    str = re.sub('%', r'\%', str)
     return str
 
 def latexify (s):
-    s = re.sub(r'\$', '\\$', s)
-    s = re.sub(r'#',  '\\#', s)
-    s = re.sub(r'&',  '\\&', s)
-    s = re.sub(r'_',  '\\_', s)
-    s = re.sub(r'%',  '\\%', s)
+    s = re.sub(r'\$', r'\$', s)
+    s = re.sub(r'#',  r'\#', s)
+    s = re.sub(r'&',  r'\&', s)
+    s = re.sub(r'_',  r'\_', s)
+    s = re.sub(r'%',  r'\%', s)
     return s
 
-def makelabel (str):
+def makelabel (s):
     global labels
-    str = re.sub('[[:punct:]]', '', str)
-    str = re.sub(' ', '-', str)
-    str = str.lower()
+    s = re.sub("[][\"!'#§%&()*+,-./:;<=>?@/^_{|}~]", '', s)
+    s = re.sub(' ', '-', s)
+    s = s.lower()
     c = 0
-    lbl = str
+    lbl = s
     while lbl in labels:
-        ++c
-        lbl = str + c
+        c = c + 1
+        lbl = s + str(c)
     labels[lbl] = 1
-    return str
+    return lbl
 
 def brepl (matchobj):
-    return '\\textbf{' + matchobj.group(1) + '}'
+    return r'\textbf{' + matchobj.group(1) + '}'
 
 def erepl (matchobj):
-    return '\\emph{' + matchobj.group(1) + '}'
+    return r'\emph{' + matchobj.group(1) + '}'
 
 def krepl (matchobj):
-    return '\\texttt{' + matchobj.group(1) + '}'
+    return r'\texttt{' + matchobj.group(1) + '}'
 
 def irepl (matchobj):
-    return '\\index{' + matchobj.group(1) + '}'
+    return r'\index{' + matchobj.group(1) + '}'
 
 def frepl (matchobj):
-    return '\\footnote{' + matchobj.group(1) + '}'
+    return r'\footnote{' + matchobj.group(1) + '}'
 
 def rrepl (matchobj):
-    return matchobj.group(1) + ' (see page \\pageref{' + matchobj.group(2) + '})'
+    return matchobj.group(1) + r' (see page \pageref{' + matchobj.group(2) + '})'
 
 def srepl (matchobj):
-    return '\\texttt{' + matchobj.group(1) + '} (see page \\pageref{' + matchobj.group(2) + '})'
+    return r'\texttt{' + matchobj.group(1) + r'} (see page \pageref{' + matchobj.group(2) + '})'
 
 def lrepl (matchobj):
     if useurl:
