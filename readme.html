@@ -1,333 +1,263 @@
 <html>
 <head>
-<title>A HTML document</title>
+  <title>A title</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="ans.css">
 </head>
 <body>
+
+
 <h1>ANStoX</h1>
-<p>
 
-A set of AWK scripts to convert annotated source to code, tests, and documentation.
+<p>A set of Python scripts to convert annotated source to code, tests, and documentation in Markdown, (La)TeX, and html flavors.</p>
 
-<p>
+<p>(I started out with AWK scripts, but AWK inexplicably freezed while processing this document, so I rewrote them.)</p>
 
-This method uses one or more <tt>.ans</tt> (ANnotated Source) files which are filtered through one of the AWK-language filters and mashed together to form a document. The idea is that each <tt>.ans</tt> file contains a number of code snippets, each with a short bit of documentation for it, and a number of test cases for it.
+<p>This method uses one or more <kbd>.ans</kbd> (ANnotated Source) files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each <kbd>.ans</kbd> file contains a number of code snippets, each with a short bit of documentation, and a number of test cases for it.</p>
 
-<p>
+<p>Examples:</p>
 
-Examples:
-
-<p>
 <pre>
-awk -f anstocode.awk alpha.ans beta.ans >thefile.scm
+python3 anstocode.py alpha.ans beta.ans &gt;thefile.c
 
-awk -f anstotest.awk alpha.ans beta.ans >thefile.test
+python3 anstotest.py alpha.ans beta.ans &gt;thefile.test
 
-awk -f anstomd.awk dict.txt alpha.ans beta.ans >README.md
+python3 anstomd.py alpha.ans beta.ans &gt;README.md
 
-awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
+python3 anstotex.py alpha.ans beta.ans &gt;thedoc.tex
 
-awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
+python3 anstohtml.py alpha.ans beta.ans &gt;thepage.html
 </pre>
-<p>
 
-In these cases, <tt>alpha.ans</tt> and <tt>beta.ans</tt> are source files containing documentation, test tags, and code tags. The code tags are printed to the code file by <tt>anstocode.awk</tt>, the test tags to the test file by <tt>anstotest.awk</tt>, and the documentation and content of the code tags are printed in different ways to the readme document by <tt>anstomd.awk</tt>, to the thedoc document by <tt>anstotex.awk</tt>, and to the thepage document by <tt>anstohtml.awk</tt>. The <tt>dict.txt</tt> file is a special case which will be explained below.
+<p>In these cases, <kbd>alpha.ans</kbd> and <kbd>beta.ans</kbd> are source files containing documentation, test tags, and code tags.</p>
 
-<p>
+<p>The code tags are printed to the code file by <kbd>anstocode.py</kbd> and the test tags to the test file by <kbd>anstotest.py</kbd>.</p>
 
-Note that the .tex document is incomplete: it needs at least a preamble and a begin for the document, which you will have to supply. It does stick an end document to the end, at least.
+<p>The documentation and content of the code tags are printed in different ways to the README document by <kbd>anstomd.py</kbd>, to the thedoc document by <kbd>anstotex.py</kbd>, and to the thepage document by <kbd>anstohtml.py</kbd>. These three scripts also use a file called <kbd>dict.txt</kbd> which is a special case which will be explained below.</p>
 
-<p>
+<aside>
 
-The code in these scripts grew out of Graham Marlow's <a href="https://www.mgmarlow.com/words/2024-03-23-markdown-awk/">Markdown Rendering with Awk</a>.
+<p>Note that the .tex document is incomplete: it needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).</p>
+</aside>
 
-<p>
+<p>The code in these scripts grew out of Graham Marlow&#x27;s <a href="https://www.mgmarlow.com/words/2024-03-23-markdown-awk/">Markdown Rendering with Awk</a>.</p>
+
 <h2>Tags</h2>
-<p>
+
 <h3>Documentation text</h3>
-<p>
 
-The original conception had an <tt>MD</tt> tag for documentation text. I was already writing this document when I realized that it was better to have the documentation text as free text, without any tags. I'm still getting used to it, but it's definitely a change for the better.
+<p>The original conception had an <kbd>MD</kbd> tag for documentation text. I was already writing this document when I realized that it was better to have the documentation text as free text, without any tags. I&#x27;m still getting used to it, but it&#x27;s definitely a change for the better.</p>
 
-<p>
 <pre>
 
 This is a short docu text.
 
 </pre>
-<p>
 
-The documentation text is processed for styling and output by the <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml.awk</tt> scripts.
+<p>The documentation text is processed for styling and output by the <kbd>anstomd.py</kbd>, <kbd>anstotex.py</kbd>, and <kbd>anstohtml.py</kbd> scripts.</p>
 
-<p>
+<p>Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.</p>
 
-Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
-
-<p>
 <h3>Code</h3>
-<p>
 
-The <tt>CB</tt> tag is for code, regardless of coding language.
+<p>The <kbd>CB</kbd> tag is for code, regardless of coding language.</p>
 
-<p>
 <pre>
 CB(
-#include <stdio.h>
+#include &lt;stdio.h&gt;
 
 int main (void) {
-    printf("Hello, world");
+    printf(&quot;Hello, world&quot;);
     return 0;
 }
 CB)
 </pre>
-<p>
-<pre>
-#include <stdio.h>
+
+<pre><code>
+#include &lt;stdio.h&gt;
 
 int main (void) {
-    printf("Hello, world");
+    printf(&quot;Hello, world&quot;);
     return 0;
 }
-</pre>
-<p>
+</code></pre>
 
-The contents of the <tt>CB</tt> tag are output without further processing by all the scripts except <tt>anstotest.awk</tt>. <tt>anstomd.awk</tt>, <tt>anstotex.awk</tt>, and <tt>anstohtml</tt> add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the <tt>lstlisting</tt> environment for (La)TeX, pre for html).
+<p>The contents of the <kbd>CB</kbd> tag are output without further processing by all the scripts except <kbd>anstotest.py</kbd>, which does not output it, and <kbd>anstohtml.py</kbd>, which does basic htmlification of <kbd>&amp;</kbd>, <kbd>&lt;</kbd>, <kbd>&gt;</kbd>, <kbd>&quot;</kbd>, and <kbd>&#x27;</kbd>. <kbd>anstomd.py</kbd>, <kbd>anstotex.py</kbd>, and <kbd>anstohtml.py</kbd> add elements around the tag&#x27;s output, suitable for presenting code (i.e. triple backticks for Markdown, the <kbd>lstlisting</kbd> environment for (La)TeX, &lt;pre&gt; and &lt;code&gt; for html).</p>
 
-<p>
 <h3>Verbatim</h3>
-<p>
 
-The <tt>VB</tt> tag is for text that should be output with no extra processing and presented with triple backticks for Markdown, the <tt>verbatim</tt> environment for (La)TeX, and pre for html. The contents of the tag aren't output by <tt>anstocode.awk</tt> or <tt>anstotest.awk</tt>.
+<p>The <kbd>VB</kbd> tag is for text that should be output with no extra processing (except basic htmlification by <kbd>anstohtml.py</kbd>) and presented with triple backticks for Markdown, the <kbd>verbatim</kbd> environment for (La)TeX, and &lt;pre&gt; for html. The contents of the tag aren&#x27;t output by <kbd>anstocode.py</kbd> or <kbd>anstotest.py</kbd>.</p>
 
-<p>
 <h3>Test cases</h3>
-<p>
 
-The <tt>TT</tt> tag is used for test case code which will be output by <tt>anstotest.awk</tt> alone. The <tt>anstotest.awk</tt> script is geared towards the <tt>tcltest</tt> engine, but should be possible to convert to other test engines by editing the BEGIN and END blocks in the script.
+<p>The <kbd>TT</kbd> tag is used for test case code which will be output by <kbd>anstotest.py</kbd> alone. The <kbd>anstotest.py</kbd> script is geared towards the <kbd>tcltest</kbd> engine, but should be possible to convert to other test engines by editing the initial and final output blocks in the script.</p>
 
-<p>
 <pre>
 TT(
 ::tcltest::test foobar-1.0 {try the foobar} -body {
    ...
-} -output "..."
+} -output &quot;...&quot;
 TT)
 </pre>
-<p>
 
-<hr>
-<p>
+<aside>
+
 <h3>Pulled text</h3>
-<p>
 
-The <tt>PT</tt> tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown and html it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the <tt>pulledtext</tt> environment. The end result is a bit of text which is marked off, like an aside.
+<p>The <kbd>PT</kbd> tag is different. It isn&#x27;t treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for (La)TeX it&#x27;s the beginning and end of the <kbd>pulledtext</kbd> environment, for html it is the element &lt;aside&gt;. The end result is a bit of text which is marked off, like an aside.</p>
+</aside>
 
-<p>
-
-<hr>
-<p>
 <h3>Lists</h3>
-<p>
 
-The <tt>IT</tt> and <tt>EN</tt> tags <em>at the beginning of the line</em> renders the line as a bulleted or a numbered list item, respectively.
+<p>The <kbd>IT</kbd> and <kbd>EN</kbd> tags <i>at the beginning of the line</i> renders the line as a bulleted or a numbered list item, respectively.</p>
 
-<p>
+<p>Example:</p>
 
-Example:
-
-<p>
 <pre>
 IT fee
 IT fie
 IT foe
 </pre>
-<p>
+
 <ul>
-<li>  fee
-<li>  fie
-<li>  foe
+<li>fee</li>
+<li>fie</li>
+<li>foe</li>
 </ul>
 
-The <tt>DL</tt> tag renders the line as a definition list item. The token LD separates the term from the definition.
+<p>The <kbd>DL</kbd> tag renders the line as a definition list item. The token LD separates the term from the definition.</p>
 
-<p>
 <pre>
 DL an item LD with a definition.
 DL another item LD with mostly the same definition.
 </pre>
-<p>
-<dl>
-<dt> an item</dt><dd>with a definition.
-</dd></dl>
-<dl>
-<dt> another item</dt><dd>with mostly the same definition.
-</dd></dl>
-<p>
 
-The definition list is faked in Markdown, and is not guaranteed to work everywhere.
+<dl>
+<dt>an item</dt><dd>with a definition.</dd>
+<dt>another item</dt><dd>with mostly the same definition.</dd>
+</dl>
 
-<p>
+<p>The definition list is faked in Markdown, and is not guaranteed to work everywhere.</p>
+
 <h2>Headings</h2>
-<p>
 
-The headings tags are the same as in html, <tt>H1</tt> to <tt>H6</tt>, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, to different heading elements for (La)TeX, and to the obvious elements in html.
+<p>The headings tags are the same as in html, <kbd>H1</kbd> to <kbd>H6</kbd>, only you put them at the start of the line, with the heading text following. They are translated to hash groups for Markdown, to different heading elements for (La)TeX, and to the obvious elements in html.</p>
 
-<p>
 <pre>
 H4 A title
 </pre>
-<p>
+
 <h4>A title</h4>
-<p>
+
 <h3>IG, EM and KB</h3>
-<p>
 
-These three beginning of the line tags:
+<p>These three beginning of the line tags:</p>
 
-<p>
 <ol>
-<li>  import a graphics element (an image)
-<li>  wrap the entire line in italics elements
-<li>  wrap the entire line in keyboard font elements
+<li>import a graphics element (an image)</li>
+<li>wrap the entire line in italics elements</li>
+<li>wrap the entire line in keyboard font elements</li>
 </ol>
+
 <pre>
 IG /images/myimage.png
 
 EM This line will be in italics
 </pre>
-<p>
 
 <i>This line will be in italics</i>
 
-<p>
 <h3>IF, IX, NI</h3>
-<p>
 
-These tags are mostly useful for translation to (La)TeX.
+<p>These tags are mostly useful for translation to (La)TeX.</p>
 
-<p>
+<p><kbd>IF</kbd> imports an image, but puts it in a float and adds a caption.</p>
 
-<tt>IF</tt> imports an image, but puts it in a float and adds a caption.
-
-<p>
 <pre>
 IF /images/myimage.png Look how pretty
 </pre>
-<p>
 
-<tt>IX</tt> makes an index entry from the text that follows it. <tt>NI</tt> puts a <tt>\noindent</tt> in front of the line.
+<p><kbd>IX</kbd> makes an index entry from the text that follows it. <kbd>NI</kbd> puts a <kbd>\noindent</kbd> in front of the line.</p>
 
-<p>
 <h2>Styling</h2>
-<p>
+
 <h3>Appearance</h3>
-<p>
 
-<tt>B</tt>{ ... } renders text bold. <tt>E</tt>{ ... } renders text in italics. <tt>K</tt>{ ... } renders text in keyboard font.
+<p><kbd>B</kbd>{ ... } renders text bold. <kbd>E</kbd>{ ... } renders text in italics. <kbd>K</kbd>{ ... } renders text in keyboard font.</p>
 
-<p>
 <pre>
-first I B{was}, then I E{was}, but then I K{was}
+first I B{was ...}, then I E{was ...}, but then I K{was ...}
 </pre>
-<p>
 
-first I <b>was</b>, then I <em>was</em>, but then I <tt>was</tt>
+<p>first I <b>was ...</b>, then I <i>was ...</i>, but then I <kbd>was ...</kbd></p>
 
-<p>
 <h3>Links, footnotes, and references</h3>
-<p>
 
-<tt>F</tt>{ ... } creates a (La)TeX footnote, or just a parenthesized bit of text in Markdown or html. <tt>R</tt>{ ... }{ ... } inserts a page reference text in (La)TeX and a link in Markdown or html.
+<p><kbd>F</kbd>{ ... } creates a (La)TeX footnote, or just a parenthesized bit of text in Markdown or html. <kbd>R</kbd>{ ... }{ ... } inserts a page reference text in (La)TeX and a link in Markdown or html.</p>
 
-<p>
 <pre>
-Lorem ipsum dolor R{sit amet}{toc-label}, consectetur adipiscing elit,
+dolor R{sit amet}{toc-label}, consectetur
 </pre>
-<p>
 
-Is rendered
+<p>is rendered</p>
 
-<p>
 <pre>
-Lorem ipsum dolor sit amet (see page \pageref{toc-label}), consectetur adipiscing elit,
+dolor sit amet (see page \pageref{toc-label}), consectetur
 </pre>
-<p>
 
-in (La)TeX,
+<p>in (La)TeX,</p>
 
-<p>
 <pre>
-Lorem ipsum dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur adipiscing elit,
+dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur
 </pre>
-<p>
 
-in Markdown (clearly some personalizing is necessary), and
+<p>in Markdown (clearly some personalizing is necessary: edit the baseURL variable), and</p>
 
-<p>
 <pre>
-Lorem ipsum dolor <a href="https://github.com/hoodiecrow/ConsTcl#toc-label">sit amet</a>, consectetur adipiscing elit,
+dolor &lt;a href=&quot;https://github.com/hoodiecrow/ConsTcl#toc-label&quot;&gt;sit amet&lt;/a&gt;, consectetur
 </pre>
-<p>
 
-in html (ditto).
+<p>in html (ditto).</p>
 
-<p>
+<p><kbd>S</kbd>{ ... }{ ... } is the same as <kbd>R</kbd>, but adds elements for keyboard font around the anchor.</p>
 
-<tt>S</tt>{ ... }{ ... } is the same as <tt>R</tt>, but adds elements for keyboard font around the anchor.
+<p><kbd>L</kbd>{ ... }{ ... } is like <kbd>R</kbd>, but for an external link.</p>
 
-<p>
-
-<tt>L</tt>{ ... }{ ... } is like <tt>R</tt>, but for an external link.
-
-<p>
 <pre>
-Lorem ipsum dolor L{sit amet}{http://site/dir/index.html}, consectetur adipiscing elit,
+dolor L{sit amet}{http://site/dir/index.html}, consectetur
 </pre>
-<p>
 
-Is rendered
+<p>is rendered</p>
 
-<p>
 <pre>
-Lorem ipsum dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur adipiscing elit,
+dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur
 </pre>
-<p>
 
-in (La)TeX,
+<p>in (La)TeX,</p>
 
-<p>
 <pre>
-Lorem ipsum dolor [sit amet](http://site/dir/index.html), consectetur adipiscing elit,
+dolor [sit amet](http://site/dir/index.html), consectetur
 </pre>
-<p>
 
-in Markdown, and
+<p>in Markdown, and</p>
 
-<p>
 <pre>
-Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur adipiscing elit,
+dolor &lt;a href=&quot;http://site/dir/index.html&quot;&gt;sit amet&lt;/a&gt;, consectetur
 </pre>
-<p>
 
-in html.
+<p>in html.</p>
 
-<p>
+<p><kbd>W</kbd>{ ... }{ ... } is like <kbd>L</kbd>, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after <kbd>https://en.wikipedia.org/wiki/</kbd>. Example:</p>
 
-<tt>W</tt>{ ... }{ ... } is like <tt>L</tt>, but for a link to Wikipedia. The contents of the second capture field is supposed to be the part of the URL after <tt>https://en.wikipedia.org/wiki/</tt>. Example:
-
-<p>
 <pre>
 W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
 </pre>
-<p>
 
-<a href="https://en.wikipedia.org/wiki/Ann_Arbor,_Michigan">Ann Arbor, Michigan</a>
+<p><a href="https://en.wikipedia.org/wiki/Ann_Arbor,_Michigan">Ann Arbor, Michigan</a></p>
 
-<p>
-<h3>dict.txt</h3>
-<p>
+<h2>dict.txt</h2>
 
-Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a <tt>dict.txt</tt> containing the text "foo -&gt; bar" or something like that (or just take the <tt>dict.txt</tt> from the repository). With some editing of the AWK scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
+<p>Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a <kbd>dict.txt</kbd> containing the text &quot;<kbd>foo -&gt; bar</kbd>&quot; or something like that without any empty lines (or just take the <kbd>dict.txt</kbd> from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I&#x27;m not going to remove it myself.</p>
 
 </body>
 </html>
-

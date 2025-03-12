@@ -40,6 +40,14 @@ def main ():
     h4 = re.compile('^[Hh]4$')
     h5 = re.compile('^[Hh]5$')
     h6 = re.compile('^[Hh]6$')
+    print('<html>')
+    print('<head>')
+    print('  <title>A title</title>')
+    print('  <meta charset=\"utf-8\">')
+    print('  <link rel="stylesheet" href="ans.css">')
+    print('</head>')
+    print('<body>')
+    print('')
     for line in fileinput.input():
         line = line.rstrip()
         if (re.match(modeline, line)):
@@ -56,15 +64,15 @@ def main ():
             else:
                 second = ''
         if (first == 'VB('):
-            print('\n```')
+            print('\n<pre>')
             in_vb = 1
             continue
         if (first == 'VB)'):
-            print('```')
+            print('</pre>')
             in_vb = 0
             continue
         if (in_vb):
-            print(line)
+            print(htmlify(line))
             continue
         if (first == 'PR('):
             in_pr = 1
@@ -88,80 +96,74 @@ def main ():
             print('</table>')
             continue
         if (h1.match(first)):
-            fields[0] = "#"
+            fields = fields[1:]
             str = ' '.join(fields)
             print('')
-            print(str)
+            print('<h1>' + htmlify(str) + '</h1>')
             continue
         if (h2.match(first)):
-            fields[0] = "##"
+            fields = fields[1:]
             str = ' '.join(fields)
             print('')
-            print(str)
+            print('<h2>' + htmlify(str) + '</h2>')
             continue
         if (h3.match(first)):
-            fields[0] = "###"
+            fields = fields[1:]
             str = ' '.join(fields)
             print('')
-            print(str)
+            print('<h3>' + htmlify(str) + '</h3>')
             continue
         if (h4.match(first)):
-            fields[0] = "####"
+            fields = fields[1:]
             str = ' '.join(fields)
             for k, v in {'"!': '!', '"@': '@', '"|': '|'}.items():
                 str = str.replace(k, v)
             print('')
-            print(str)
+            print('<h4>' + htmlify(str) + '</h4>')
             continue
         if (h5.match(first)):
-            fields[0] = "#####"
+            fields = fields[1:]
             str = ' '.join(fields)
             print('')
-            print(str)
+            print('<h5>' + htmlify(str) + '</h5>')
             continue
         if (h6.match(first)):
-            fields[0] = "######"
+            fields = fields[1:]
             str = ' '.join(fields)
             print('')
-            print(str)
+            print('<h6>' + htmlify(str) + '</h6>')
             continue
         if first == 'IX':
             continue
         if first == 'IG' or first == 'IF':
             print('')
-            print(f'![#]({second[1:]})')
+            print(f'\n<img src="{second[1:]}">')
             continue
         if first == 'EM':
             fields = fields[1:]
             str = ' '.join(fields)
-            str = render(str)
-            print('')
-            print(f'_{str}_')
+            print(f'\n<i>{render(str)}</i>')
             continue
         if first == 'KB':
             fields = fields[1:]
             str = ' '.join(fields)
-            str = render(str)
-            print('')
-            print(f'``{str}``')
+            print(f'\n<kbd>{render(str)}</kbd>')
             continue
         if first == 'NI':
             fields = fields[1:]
             str = ' '.join(fields)
-            str = render(str)
-            print('')
-            print(str)
+            print(f'\n{render(str)}')
             continue
         if first == 'CB(':
             in_cb = 1
-            print("\n```")
+            print("\n<pre><code>")
             continue
         if first == 'CB)':
             in_cb = 0
-            print("```")
+            print("</code></pre>")
             continue
         if in_cb:
-            print(line)
+            print(htmlify(line))
             continue
         if first == 'TT(':
             in_tt = 1
@@ -173,46 +175,47 @@ def main ():
             continue
         if first == 'IT':
             if not in_it:
-                print('')
+                print('\n<ul>')
             in_it = 1
-            fields[0] = '*'
+            fields = fields[1:]
             str = ' '.join(fields)
-            str = render(str)
-            print(str)
+            print(f'<li>{render(str)}</li>')
             continue
         if in_it and first != 'IT':
+            print('</ul>')
             in_it = 0
             continue
         if first == 'EN':
             if not in_en:
-                print('')
+                print('\n<ol>')
             in_en = 1
-            fields[0] = '1.'
+            fields = fields[1:]
             str = ' '.join(fields)
-            str = render(str)
-            print(str)
+            print(f'<li>{render(str)}</li>')
             continue
         if in_en and first != 'EN':
+            print('</ol>')
             in_en = 0
             continue
         if first == 'DL':
             if not in_dl:
-                print('')
+                print('\n<dl>')
             in_dl = 1
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
             label, deftext = re.split(r' LD ', str)
-            print(f'1. {label}  \n{deftext}')
+            print(f'<dt>{label}</dt><dd>{deftext}</dd>')
             continue
         if in_dl and first != 'DL':
+            print('</dl>')
             in_dl = 0
             continue
         if first == 'PT(':
-            print("\n\n---\n")
+            print("\n<aside>")
             continue
         if first == 'PT)':
-            print("\n\n---\n")
+            print("</aside>")
             continue
         if line == '':
             flushp()
@@ -220,7 +223,9 @@ def main ():
             for field in fields:
                 collect(field)
     flushp()
-    print('\n')
+    print('')
+    print('</body>')
+    print('</html>')
 
 
 def collect (v):
@@ -233,14 +238,15 @@ def flushp ():
     global cline
     global csep
     if cline != '':
-        print(f'\n{render(cline)}')
+        print(f'\n<p>{render(cline)}</p>')
         cline = ''
         csep = ''
 
 def htmlify (str):
-    return html.escape(str, False)
+    return html.escape(str)
 
 def render (str):
+    global baseURL
     global b
     global e
     global k
@@ -251,6 +257,7 @@ def render (str):
     global l
     global w
     global p
+    str = htmlify(str)
     for x, y in {'\{': '{', '\}': '}', '==>': '⇒'}.items():
         str = str.replace(x, y)
     str = b.sub(brepl, str, 20)
@@ -266,13 +273,13 @@ def render (str):
     return str
 
 def brepl (matchobj):
-    return '__' + matchobj.group(1) + '__'
+    return '<b>' + matchobj.group(1) + '</b>'
 
 def erepl (matchobj):
-    return '_' + matchobj.group(1) + '_'
+    return '<i>' + matchobj.group(1) + '</i>'
 
 def krepl (matchobj):
-    return '`` ' + matchobj.group(1) + ' ``'
+    return '<kbd>' + matchobj.group(1) + '</kbd>'
 
 def irepl (matchobj):
     return ''
@@ -282,17 +289,17 @@ def frepl (matchobj):
 
 def rrepl (matchobj):
     global baseURL
-    return f'[{matchobj.group(1)}]({baseURL}#{matchobj.group(2)})'
+    return f'<a href="{baseURL}#{matchobj.group(2)}">{matchobj.group(1)}</a>'
 
 def srepl (matchobj):
     global baseURL
-    return f'[``{matchobj.group(1)}``]({baseURL}#{matchobj.group(2)})'
+    return f'<kbd><a href="{baseURL}#{matchobj.group(2)}">{matchobj.group(1)}</a></kbd>'
 
 def lrepl (matchobj):
-    return f'[{matchobj.group(1)}]({matchobj.group(2)})'
+    return f'<a href="{matchobj.group(2)}">{matchobj.group(1)}</a>'
 
 def wrepl (matchobj):
-    return f'[{matchobj.group(1)}](https://en.wikipedia.org/wiki/{matchobj.group(2)})'
+    return f'<a href="https://en.wikipedia.org/wiki/{matchobj.group(2)}">{matchobj.group(1)}</a>'
 
 def prepl (matchobj):
     return f'{matchobj.group(1)}<sup>{matchobj.group(2)}</sup>'

@@ -32,7 +32,6 @@ def main ():
             continue
         if first == 'CB(':
             in_cb = 1
-            print("")
             continue
         if first == 'CB)':
             in_cb = 0
@@ -40,6 +39,7 @@ def main ():
         if in_cb:
             print(line)
             continue
+    print('')
 
 
 main()

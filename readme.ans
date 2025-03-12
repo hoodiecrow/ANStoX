@@ -1,44 +1,46 @@
 H1 ANStoX
 
-A set of AWK scripts to convert annotated source to code, tests, and
-documentation.
+A set of Python scripts to convert annotated source to code, tests, and
+documentation in Markdown, (La)TeX, and html flavors.
+
+(I started out with AWK scripts, but AWK inexplicably freezed while processing
+this document, so I rewrote them.)
 
 This method uses one or more K{.ans}F{ANnotated Source} files which are
-filtered through one of the AWK-language filters and mashed together to form a
+filtered through one of the Python filters and mashed together to form a
 document. The idea is that each K{.ans} file contains a number of code snippets,
-each with a short bit of documentation for it, and a number of test cases for
-it.
+each with a short bit of documentation, and a number of test cases for it.
 
 Examples:
 
 VB(
-awk -f anstocode.awk alpha.ans beta.ans >thefile.scm
+python3 anstocode.py alpha.ans beta.ans >thefile.c
 
-awk -f anstotest.awk alpha.ans beta.ans >thefile.test
+python3 anstotest.py alpha.ans beta.ans >thefile.test
 
-awk -f anstomd.awk dict.txt alpha.ans beta.ans >README.md
+python3 anstomd.py alpha.ans beta.ans >README.md
 
-awk -f anstotex.awk dict.txt alpha.ans beta.ans >thedoc.tex
+python3 anstotex.py alpha.ans beta.ans >thedoc.tex
 
-awk -f anstohtml.awk dict.txt alpha.ans beta.ans >thepage.html
+python3 anstohtml.py alpha.ans beta.ans >thepage.html
 VB)
 
 In these cases, K{alpha.ans} and K{beta.ans} are source files containing
 documentation, test tags, and code tags.
 
-The code tags are printed to the code file by K{anstocode.awk} and, the test
-tags to the test file by K{anstotest.awk}.
+The code tags are printed to the code file by K{anstocode.py} and the test
+tags to the test file by K{anstotest.py}.
 
 The documentation and content of the code tags are printed in different ways to
-the README document by K{anstomd.awk}, to the thedoc document by
-K{anstotex.awk}, and to the thepage document by K{anstohtml.awk}. The
-K{dict.txt} file is a special case which will be explained below.
+the README document by K{anstomd.py}, to the thedoc document by K{anstotex.py},
+and to the thepage document by K{anstohtml.py}. These three scripts also use a
+file called K{dict.txt} which is a special case which will be explained below.
 
 PT(
 
 Note that the .tex document is incomplete: it needs at least a preamble and a
-begin for the document, which you will have to supply. It does at least stick
-an end-document to the end.
+begin and end for the document, which you will have to supply (I have no way of
+knowing what you need regarding that).
 
 PT)
 
@@ -61,7 +63,7 @@ This is a short docu text.
 VB)
 
 The documentation text is processed for styling and output by the
-K{anstomd.awk}, K{anstotex.awk}, and K{anstohtml.awk} scripts.
+K{anstomd.py}, K{anstotex.py}, and K{anstohtml.py} scripts.
 
 Remember to put empty lines before and after paragraphs, otherwise the
 paragraphs will bleed into each other.
@@ -91,26 +93,26 @@ int main (void) {
 CB)
 
 The contents of the K{CB} tag are output without further processing by all the
-scripts except K{anstotest.awk}, which does not output it, and
-K{anstohtml.awk}, which does basic htmlification of K{&}, K{<}, and K{>}.
-K{anstomd.awk}, K{anstotex.awk}, and K{anstohtml} add elements around the tag's
+scripts except K{anstotest.py}, which does not output it, and K{anstohtml.py},
+which does basic htmlification of K{&}, K{<}, K{>}, K{"}, and K{'}.
+K{anstomd.py}, K{anstotex.py}, and K{anstohtml.py} add elements around the tag's
 output, suitable for presenting code (i.e. triple backticks for Markdown, the
-K{lstlisting} environment for (La)TeX, pre and code for html).
+K{lstlisting} environment for (La)TeX, <pre> and <code> for html).
 
 H3 Verbatim
 
 The K{VB} tag is for text that should be output with no extra processing
-(except basic htmlification by K{anstohtml.awk}) and presented with triple
-backticks for Markdown, the K{verbatim} environment for (La)TeX, and pre for
-html. The contents of the tag aren't output by K{anstocode.awk} or
-K{anstotest.awk}.
+(except basic htmlification by K{anstohtml.py}) and presented with triple
+backticks for Markdown, the K{verbatim} environment for (La)TeX, and <pre> for
+html. The contents of the tag aren't output by K{anstocode.py} or
+K{anstotest.py}.
 
 H3 Test cases
 
 The K{TT} tag is used for test case code which will be output by
-K{anstotest.awk} alone. The K{anstotest.awk} script is geared towards the
+K{anstotest.py} alone. The K{anstotest.py} script is geared towards the
 K{tcltest} engine, but should be possible to convert to other test engines by
-editing the BEGIN and END blocks in the script.
+editing the initial and final output blocks in the script.
 
 VB(
 TT(
@@ -134,7 +136,7 @@ The K{PT} tag is different. It isn't treated as a content tag. Instead, one
 puts it around a short range of documentation text. The point of using it is
 that it adds formatting around the text within it: for Markdown it is a
 preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and
-end of the K{pulledtext} environment, for html it is the element aside. The end
+end of the K{pulledtext} environment, for html it is the element <aside>. The end
 result is a bit of text which is marked off, like an aside.
 
 PT)
@@ -219,10 +221,10 @@ K{B}\{ ... \} renders text bold. K{E}\{ ... \} renders text in italics. K{K}\{
 ... \} renders text in keyboard font.
 
 VB(
-first I B{was}, then I E{was}, but then I K{was}
+first I B{was ...}, then I E{was ...}, but then I K{was ...}
 VB)
 
-first I B{was}, then I E{was}, but then I K{was}
+first I B{was ...}, then I E{was ...}, but then I K{was ...}
 
 H3 Links, footnotes, and references
 
@@ -231,25 +233,25 @@ in Markdown or html. K{R}\{ ... \}\{ ... \} inserts a page reference text in
 (La)TeX and a link in Markdown or html.
 
 VB(
-Lorem ipsum dolor R{sit amet}{toc-label}, consectetur adipiscing elit,
+dolor R{sit amet}{toc-label}, consectetur
 VB)
 
-Is rendered
+is rendered
 
 VB(
-Lorem ipsum dolor sit amet (see page \pageref{toc-label}), consectetur adipiscing elit,
+dolor sit amet (see page \pageref{toc-label}), consectetur
 VB)
 
 in (La)TeX,
 
 VB(
-Lorem ipsum dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur adipiscing elit,
+dolor [sit amet](https://github.com/hoodiecrow/ConsTcl#toc-label), consectetur
 VB)
 
-in Markdown (clearly some personalizing is necessary), and
+in Markdown (clearly some personalizing is necessary: edit the baseURL variable), and
 
 VB(
-Lorem ipsum dolor <a href="https://github.com/hoodiecrow/ConsTcl#toc-label">sit amet</a>, consectetur adipiscing elit,
+dolor <a href="https://github.com/hoodiecrow/ConsTcl#toc-label">sit amet</a>, consectetur
 VB)
 
 in html (ditto).
@@ -259,25 +261,25 @@ K{S}\{ ... \}\{ ... \} is the same as K{R}, but adds elements for keyboard font 
 K{L}\{ ... \}\{ ... \} is like K{R}, but for an external link.
 
 VB(
-Lorem ipsum dolor L{sit amet}{http://site/dir/index.html}, consectetur adipiscing elit,
+dolor L{sit amet}{http://site/dir/index.html}, consectetur
 VB)
 
-Is rendered
+is rendered
 
 VB(
-Lorem ipsum dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur adipiscing elit,
+dolor sit amet\footnote{See \texttt{http://site/dir/index.html}}, consectetur
 VB)
 
 in (La)TeX,
 
 VB(
-Lorem ipsum dolor [sit amet](http://site/dir/index.html), consectetur adipiscing elit,
+dolor [sit amet](http://site/dir/index.html), consectetur
 VB)
 
 in Markdown, and 
 
 VB(
-Lorem ipsum dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur adipiscing elit,
+dolor <a href="http://site/dir/index.html">sit amet</a>, consectetur
 VB)
 
 in html.
@@ -292,11 +294,12 @@ VB)
 
 W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
 
-H3 dict.txt
+H2 dict.txt
 
 Is a file containing a dictionary that I use to construct prototype tables for
 procedures in my code. You will probably not need or want it, so just add a
-K{dict.txt} containing the text "foo  ->  bar" or something like that (or just
-take the K{dict.txt} from the repository). With some editing of the AWK
-scripts, the use for it can be removed. I still need it, so I'm not going to
-remove it myself.
+K{dict.txt} containing the text "K{foo  ->  bar}" or something like that without
+any empty lines (or just take the K{dict.txt} from the repository). With some
+editing of the scripts, the use for it can be removed. I still need it, so
+I'm not going to remove it myself.
+
