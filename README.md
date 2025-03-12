@@ -79,11 +79,11 @@ int main (void) {
 }
 ```
 
-The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.py ``, which does not output it, and `` anstohtml.py ``, which does basic htmlification of `` & ``, `` < ``, `` > ``, `` " ``, and `` ' ``. `` anstomd.py ``, `` anstotex.py ``, and `` anstohtml.py `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for (La)TeX, <pre> and <code> for html).
+The contents of the `` CB `` tag are output without further processing by all the scripts except `` anstotest.py ``, which does not output it, and `` anstohtml.py ``, which does basic htmlification of `` & ``, `` < ``, `` > ``, `` " ``, and `` ' ``. `` anstomd.py ``, `` anstotex.py ``, and `` anstohtml.py `` add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the `` lstlisting `` environment for (La)TeX, pre and code for html).
 
 ### Verbatim
 
-The `` VB `` tag is for text that should be output with no extra processing (except basic htmlification by `` anstohtml.py ``) and presented with triple backticks for Markdown, the `` verbatim `` environment for (La)TeX, and <pre> for html. The contents of the tag aren't output by `` anstocode.py `` or `` anstotest.py ``.
+The `` VB `` tag is for text that should be output with no extra processing (except basic htmlification by `` anstohtml.py ``) and presented with triple backticks for Markdown, the `` verbatim `` environment for (La)TeX, and pre for html. The contents of the tag aren't output by `` anstocode.py `` or `` anstotest.py ``.
 
 ### Test cases
 

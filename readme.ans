@@ -97,13 +97,13 @@ scripts except K{anstotest.py}, which does not output it, and K{anstohtml.py},
 which does basic htmlification of K{&}, K{<}, K{>}, K{"}, and K{'}.
 K{anstomd.py}, K{anstotex.py}, and K{anstohtml.py} add elements around the tag's
 output, suitable for presenting code (i.e. triple backticks for Markdown, the
-K{lstlisting} environment for (La)TeX, <pre> and <code> for html).
+K{lstlisting} environment for (La)TeX, pre and code for html).
 
 H3 Verbatim
 
 The K{VB} tag is for text that should be output with no extra processing
 (except basic htmlification by K{anstohtml.py}) and presented with triple
-backticks for Markdown, the K{verbatim} environment for (La)TeX, and <pre> for
+backticks for Markdown, the K{verbatim} environment for (La)TeX, and pre for
 html. The contents of the tag aren't output by K{anstocode.py} or
 K{anstotest.py}.
 

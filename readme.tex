@@ -80,13 +80,13 @@ int main (void) {
 }
 \end{lstlisting}
 
-The contents of the \texttt{CB} tag are output without further processing by all the scripts except \texttt{anstotest.py}, which does not output it, and \texttt{anstohtml.py}, which does basic htmlification of \texttt{\&}, \texttt{<}, \texttt{>}, \texttt{"}, and \texttt{'}. \texttt{anstomd.py}, \texttt{anstotex.py}, and \texttt{anstohtml.py} add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the \texttt{lstlisting} environment for (La)TeX, <pre> and <code> for html).
+The contents of the \texttt{CB} tag are output without further processing by all the scripts except \texttt{anstotest.py}, which does not output it, and \texttt{anstohtml.py}, which does basic htmlification of \texttt{\&}, \texttt{<}, \texttt{>}, \texttt{"}, and \texttt{'}. \texttt{anstomd.py}, \texttt{anstotex.py}, and \texttt{anstohtml.py} add elements around the tag's output, suitable for presenting code (i.e. triple backticks for Markdown, the \texttt{lstlisting} environment for (La)TeX, pre and code for html).
 
 \section{Verbatim}
 \label{verbatim}
 \index{Verbatim}
 
-The \texttt{VB} tag is for text that should be output with no extra processing (except basic htmlification by \texttt{anstohtml.py}) and presented with triple backticks for Markdown, the \texttt{verbatim} environment for (La)TeX, and <pre> for html. The contents of the tag aren't output by \texttt{anstocode.py} or \texttt{anstotest.py}.
+The \texttt{VB} tag is for text that should be output with no extra processing (except basic htmlification by \texttt{anstohtml.py}) and presented with triple backticks for Markdown, the \texttt{verbatim} environment for (La)TeX, and pre for html. The contents of the tag aren't output by \texttt{anstocode.py} or \texttt{anstotest.py}.
 
 \section{Test cases}
 \label{test-cases}

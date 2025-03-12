@@ -82,11 +82,11 @@ int main (void) {
 }
 </code></pre>
 
-<p>The contents of the <kbd>CB</kbd> tag are output without further processing by all the scripts except <kbd>anstotest.py</kbd>, which does not output it, and <kbd>anstohtml.py</kbd>, which does basic htmlification of <kbd>&amp;</kbd>, <kbd>&lt;</kbd>, <kbd>&gt;</kbd>, <kbd>&quot;</kbd>, and <kbd>&#x27;</kbd>. <kbd>anstomd.py</kbd>, <kbd>anstotex.py</kbd>, and <kbd>anstohtml.py</kbd> add elements around the tag&#x27;s output, suitable for presenting code (i.e. triple backticks for Markdown, the <kbd>lstlisting</kbd> environment for (La)TeX, &lt;pre&gt; and &lt;code&gt; for html).</p>
+<p>The contents of the <kbd>CB</kbd> tag are output without further processing by all the scripts except <kbd>anstotest.py</kbd>, which does not output it, and <kbd>anstohtml.py</kbd>, which does basic htmlification of <kbd>&amp;</kbd>, <kbd>&lt;</kbd>, <kbd>&gt;</kbd>, <kbd>&quot;</kbd>, and <kbd>&#x27;</kbd>. <kbd>anstomd.py</kbd>, <kbd>anstotex.py</kbd>, and <kbd>anstohtml.py</kbd> add elements around the tag&#x27;s output, suitable for presenting code (i.e. triple backticks for Markdown, the <kbd>lstlisting</kbd> environment for (La)TeX, pre and code for html).</p>
 
 <h3>Verbatim</h3>
 
-<p>The <kbd>VB</kbd> tag is for text that should be output with no extra processing (except basic htmlification by <kbd>anstohtml.py</kbd>) and presented with triple backticks for Markdown, the <kbd>verbatim</kbd> environment for (La)TeX, and &lt;pre&gt; for html. The contents of the tag aren&#x27;t output by <kbd>anstocode.py</kbd> or <kbd>anstotest.py</kbd>.</p>
+<p>The <kbd>VB</kbd> tag is for text that should be output with no extra processing (except basic htmlification by <kbd>anstohtml.py</kbd>) and presented with triple backticks for Markdown, the <kbd>verbatim</kbd> environment for (La)TeX, and pre for html. The contents of the tag aren&#x27;t output by <kbd>anstocode.py</kbd> or <kbd>anstotest.py</kbd>.</p>
 
 <h3>Test cases</h3>
 
