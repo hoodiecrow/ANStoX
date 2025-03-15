@@ -5,7 +5,7 @@ A set of Python scripts to convert annotated source to code, tests, and document
 
 (I started out with AWK scripts, but AWK inexplicably freezed while processing this document, so I rewrote them.)
 
-This method uses one or more `` .ans `` (ANnotated Source) files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each `` .ans `` file contains a number of code snippets, each with a short bit of documentation, and a number of test cases for it.
+This method uses one or more `` .ans `` (ANnotated Source) files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each `` .ans `` file contains a number of code snippets, each with a short or long bit of documentation, and a number of test cases for it.
 
 Examples:
 
@@ -39,7 +39,7 @@ Note that unlike the html and Markdown documents, the middle.tex document is inc
 ---
 
 
-The code in these scripts grew out of Graham Marlow's [Markdown Rendering with Awk](https://www.mgmarlow.com/words/2024-03-23-markdown-awk/).
+The code in these scripts grew out of Graham Marlow's [Markdown Rendering with Awk](https://www.mgmarlow.com/words/2024-03-23-markdown-awk/). The Literate Programming concept by Donald E Knuth was of course a major inspiration.
 
 ## Tags
 
@@ -56,6 +56,18 @@ This is a short docu text.
 The documentation text is processed for styling and output by the `` anstomd.py ``, `` anstotex.py ``, and `` anstohtml.py `` scripts.
 
 Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
+
+### Prototype table
+
+The `` PR `` tag is supposed to contain a single line with table header, semicolon, parameter names and type codes delimited by spaces, and the symbol -> and a type code for the return value. The type codes are resolved by the dictionary loaded from dict.txt (see last section). As a result, a table is inserted into the documentation document. It is very useful to me, but I'm not sure if anyone else would find it useful. In case someone asks, I'll document it further.
+
+```
+PR(
+my function;a foo -> foo
+PR)
+```
+
+<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>bar</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
 
 ### Code
 

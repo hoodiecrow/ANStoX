@@ -8,8 +8,9 @@ this document, so I rewrote them.)
 
 This method uses one or more K{.ans}F{ANnotated Source} files which are
 filtered through one of the Python filters and mashed together to form a
-document. The idea is that each K{.ans} file contains a number of code snippets,
-each with a short bit of documentation, and a number of test cases for it.
+document. The idea is that each K{.ans} file contains a number of code
+snippets, each with a short or long bit of documentation, and a number of test
+cases for it.
 
 Examples:
 
@@ -48,7 +49,8 @@ that).
 PT)
 
 The code in these scripts grew out of Graham Marlow's L{Markdown Rendering with
-Awk}{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}.
+Awk}{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}. The Literate
+Programming concept by Donald E Knuth was of course a major inspiration.
 
 H2 Tags
 
@@ -70,6 +72,26 @@ K{anstomd.py}, K{anstotex.py}, and K{anstohtml.py} scripts.
 
 Remember to put empty lines before and after paragraphs, otherwise the
 paragraphs will bleed into each other.
+
+H3 Prototype table
+
+The K{PR} tag is supposed to contain a single line with table header,
+semicolon, parameter names and type codes delimited by spaces, and the symbol
+-> and a type code for the return value. The type codes are resolved by the
+dictionary loaded from dict.txt (see last section). As a result, a table is
+inserted into the documentation document. It is very useful to me, but I'm not
+sure if anyone else would find it useful. In case someone asks, I'll document
+it further.
+
+VB(
+PR(
+my function;a foo -> foo
+PR)
+VB)
+
+PR(
+my function;a foo -> foo
+PR)
 
 H3 Code
 

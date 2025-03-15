@@ -6,7 +6,7 @@ A set of Python scripts to convert annotated source to code, tests, and document
 
 (I started out with AWK scripts, but AWK inexplicably freezed while processing this document, so I rewrote them.)
 
-This method uses one or more \texttt{.ans}\footnote{ANnotated Source} files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each \texttt{.ans} file contains a number of code snippets, each with a short bit of documentation, and a number of test cases for it.
+This method uses one or more \texttt{.ans}\footnote{ANnotated Source} files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each \texttt{.ans} file contains a number of code snippets, each with a short or long bit of documentation, and a number of test cases for it.
 
 Examples:
 
@@ -35,7 +35,7 @@ The documentation and content of the code tags are printed in different ways to 
 Note that unlike the html and Markdown documents, the middle.tex document is incomplete. It needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).
 \end{pulledtext}
 
-The code in these scripts grew out of Graham Marlow's Markdown Rendering with Awk\footnote{See \texttt{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}}.
+The code in these scripts grew out of Graham Marlow's Markdown Rendering with Awk\footnote{See \texttt{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}}. The Literate Programming concept by Donald E Knuth was of course a major inspiration.
 
 \chapter{Tags}
 \label{tags}
@@ -55,6 +55,26 @@ This is a short docu text.
 The documentation text is processed for styling and output by the \texttt{anstomd.py}, \texttt{anstotex.py}, and \texttt{anstohtml.py} scripts.
 
 Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.
+
+\section{Prototype table}
+\label{prototype-table}
+\index{Prototype table}
+
+The \texttt{PR} tag is supposed to contain a single line with table header, semicolon, parameter names and type codes delimited by spaces, and the symbol -> and a type code for the return value. The type codes are resolved by the dictionary loaded from dict.txt (see last section). As a result, a table is inserted into the documentation document. It is very useful to me, but I'm not sure if anyone else would find it useful. In case someone asks, I'll document it further.
+
+\begin{verbatim}
+PR(
+my function;a foo -> foo
+PR)
+\end{verbatim}
+
+\noindent\begin{tabular}{ |p{1.9cm} p{8cm}| }
+\hline
+\rowcolor[HTML]{CCCCCC} \multicolumn{2}{|l|}{\bf my function} \\
+a & bar \\
+\textit{Returns:} & bar \\
+\hline
+\end{tabular}
 
 \section{Code}
 \label{code}

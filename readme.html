@@ -13,7 +13,7 @@
 
 <p>(I started out with AWK scripts, but AWK inexplicably freezed while processing this document, so I rewrote them.)</p>
 
-<p>This method uses one or more <kbd>.ans</kbd> (ANnotated Source) files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each <kbd>.ans</kbd> file contains a number of code snippets, each with a short bit of documentation, and a number of test cases for it.</p>
+<p>This method uses one or more <kbd>.ans</kbd> (ANnotated Source) files which are filtered through one of the Python filters and mashed together to form a document. The idea is that each <kbd>.ans</kbd> file contains a number of code snippets, each with a short or long bit of documentation, and a number of test cases for it.</p>
 
 <p>Examples:</p>
 
@@ -42,7 +42,7 @@ cat preamble.tex middle.tex end.tex &gt;thedoc.tex
 <p>Note that unlike the html and Markdown documents, the middle.tex document is incomplete. It needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).</p>
 </aside>
 
-<p>The code in these scripts grew out of Graham Marlow&#x27;s <a href="https://www.mgmarlow.com/words/2024-03-23-markdown-awk/">Markdown Rendering with Awk</a>.</p>
+<p>The code in these scripts grew out of Graham Marlow&#x27;s <a href="https://www.mgmarlow.com/words/2024-03-23-markdown-awk/">Markdown Rendering with Awk</a>. The Literate Programming concept by Donald E Knuth was of course a major inspiration.</p>
 
 <h2>Tags</h2>
 
@@ -59,6 +59,18 @@ This is a short docu text.
 <p>The documentation text is processed for styling and output by the <kbd>anstomd.py</kbd>, <kbd>anstotex.py</kbd>, and <kbd>anstohtml.py</kbd> scripts.</p>
 
 <p>Remember to put empty lines before and after paragraphs, otherwise the paragraphs will bleed into each other.</p>
+
+<h3>Prototype table</h3>
+
+<p>The <kbd>PR</kbd> tag is supposed to contain a single line with table header, semicolon, parameter names and type codes delimited by spaces, and the symbol -&gt; and a type code for the return value. The type codes are resolved by the dictionary loaded from dict.txt (see last section). As a result, a table is inserted into the documentation document. It is very useful to me, but I&#x27;m not sure if anyone else would find it useful. In case someone asks, I&#x27;ll document it further.</p>
+
+<pre>
+PR(
+my function;a foo -&gt; foo
+PR)
+</pre>
+
+<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>bar</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
 
 <h3>Code</h3>
 
