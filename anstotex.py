@@ -323,7 +323,7 @@ def render (str):
     str = i.sub(irepl, str, 10)
     str = f.sub(frepl, str, 10)
     str = re.sub('\.\.\.', r'\\ldots ', str)
-    str = re.sub('(La)TeX', r'\\LaTeX ', str)
+    str = re.sub('\(La\)TeX', r'\\LaTeX{}', str)
     str = r.sub(rrepl, str, 20)
     str = s.sub(srepl, str, 20)
     str = l.sub(lrepl, str, 20)

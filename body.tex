@@ -1,28 +1,3 @@
-\documentclass{report}
-\usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{listings}
-\usepackage{caption}
-\usepackage{float}
-  \floatstyle{boxed}
-  \newfloat{pulledtext}{tbp}{pulledtext}
-\lstset{%
-  showstringspaces=false,
-  frame=lines,
-  numbers=left,
-  numberstyle=\tiny,
-  firstnumber=last,
-  basicstyle=\small\ttfamily,
-}
-\title{A Title}
-\author{Someone}
-\date{\today}
-
-\begin{document}
-\maketitle
-
-\tableofcontents
-
 
 \part{ANStoX}
 \label{anstox}
@@ -311,6 +286,4 @@ Ann Arbor, Michigan\footnote{See \texttt{https://en.wikipedia.org/wiki/Ann\_Arbo
 
 Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a \texttt{dict.txt} containing the text "\texttt{foo -> bar}" or something like that without any empty lines (or just take the \texttt{dict.txt} from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
 
-
-\end{document}
 

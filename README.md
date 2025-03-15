@@ -181,7 +181,7 @@ IF /images/myimage.png Look how pretty
 
 (It seems that it needs to be styled with CSS to be visible in html.)
 
-`` IX `` and `` NI ``are mostly useful for translation to (La)TeX.
+`` IX `` and `` NI `` are mostly useful for translation to (La)TeX.
 
 `` IX `` makes an index entry from the text that follows it. `` NI `` puts a `` \noindent `` in front of the line.
 
