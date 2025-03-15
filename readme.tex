@@ -17,9 +17,11 @@ python3 anstotest.py alpha.ans beta.ans >thefile.test
 
 python3 anstomd.py alpha.ans beta.ans >README.md
 
-python3 anstotex.py alpha.ans beta.ans >thedoc.tex
-
 python3 anstohtml.py alpha.ans beta.ans >thepage.html
+
+python3 anstotex.py alpha.ans beta.ans >middle.tex
+
+cat preamble.tex middle.tex end.tex >thedoc.tex
 \end{verbatim}
 
 In these cases, \texttt{alpha.ans} and \texttt{beta.ans} are source files containing documentation, test tags, and code tags.
@@ -30,7 +32,7 @@ The documentation and content of the code tags are printed in different ways to 
 
 \begin{pulledtext}
 
-Note that the .tex document is incomplete: it needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).
+Note that unlike the html and Markdown documents, the middle.tex document is incomplete. It needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).
 \end{pulledtext}
 
 The code in these scripts grew out of Graham Marlow's Markdown Rendering with Awk\footnote{See \texttt{https://www.mgmarlow.com/words/2024-03-23-markdown-awk/}}.
@@ -108,7 +110,7 @@ TT)
 \label{pulled-text}
 \index{Pulled text}
 
-The \texttt{PT} tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the \texttt{pulledtext} environment, for html it is the element <aside>. The end result is a bit of text which is marked off, like an aside.
+The \texttt{PT} tag is different. It isn't treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for (La)TeX it's the beginning and end of the \texttt{pulledtext} environment, for html it is the element aside. The end result is a bit of text which is marked off, like an aside.
 \end{pulledtext}
 
 \section{Lists}

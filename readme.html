@@ -24,9 +24,11 @@ python3 anstotest.py alpha.ans beta.ans &gt;thefile.test
 
 python3 anstomd.py alpha.ans beta.ans &gt;README.md
 
-python3 anstotex.py alpha.ans beta.ans &gt;thedoc.tex
-
 python3 anstohtml.py alpha.ans beta.ans &gt;thepage.html
+
+python3 anstotex.py alpha.ans beta.ans &gt;middle.tex
+
+cat preamble.tex middle.tex end.tex &gt;thedoc.tex
 </pre>
 
 <p>In these cases, <kbd>alpha.ans</kbd> and <kbd>beta.ans</kbd> are source files containing documentation, test tags, and code tags.</p>
@@ -37,7 +39,7 @@ python3 anstohtml.py alpha.ans beta.ans &gt;thepage.html
 
 <aside>
 
-<p>Note that the .tex document is incomplete: it needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).</p>
+<p>Note that unlike the html and Markdown documents, the middle.tex document is incomplete. It needs at least a preamble and a begin and end for the document, which you will have to supply (I have no way of knowing what you need regarding that).</p>
 </aside>
 
 <p>The code in these scripts grew out of Graham Marlow&#x27;s <a href="https://www.mgmarlow.com/words/2024-03-23-markdown-awk/">Markdown Rendering with Awk</a>.</p>
@@ -104,7 +106,7 @@ TT)
 
 <h3>Pulled text</h3>
 
-<p>The <kbd>PT</kbd> tag is different. It isn&#x27;t treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for (La)TeX it&#x27;s the beginning and end of the <kbd>pulledtext</kbd> environment, for html it is the element &lt;aside&gt;. The end result is a bit of text which is marked off, like an aside.</p>
+<p>The <kbd>PT</kbd> tag is different. It isn&#x27;t treated as a content tag. Instead, one puts it around a short range of documentation text. The point of using it is that it adds formatting around the text within it: for Markdown it is a preceding and a succeeding horizontal rule; for (La)TeX it&#x27;s the beginning and end of the <kbd>pulledtext</kbd> environment, for html it is the element aside. The end result is a bit of text which is marked off, like an aside.</p>
 </aside>
 
 <h3>Lists</h3>
