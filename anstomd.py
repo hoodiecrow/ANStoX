@@ -127,9 +127,16 @@ def main ():
             continue
         if first == 'IX':
             continue
-        if first == 'IG' or first == 'IF':
+        if first == 'IG':
             print('')
             print(f'![#]({second[1:]})')
+            continue
+        if first == 'IF':
+            fields = fields[2:]
+            caption = ' '.join(fields)
+            print('')
+            print(f'![#]({second[1:]} "{caption}")')
+            caption = ''
             continue
         if first == 'EM':
             fields = fields[1:]

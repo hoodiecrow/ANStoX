@@ -176,19 +176,25 @@ IG /images/myimage.png
 EM This line will be in italics
 \end{verbatim}
 
+\includegraphics{images/myimage.png}
+
 \emph{This line will be in italics}
 
 \section{IF, IX, NI}
 \label{if-ix-ni}
 \index{IF, IX, NI}
 
-These tags are mostly useful for translation to (La)TeX.
-
 \texttt{IF} imports an image, but puts it in a float and adds a caption.
 
 \begin{verbatim}
 IF /images/myimage.png Look how pretty
 \end{verbatim}
+
+\begin{figure}[h!]\includegraphics{images/myimage.png}\captionsetup{labelformat=empty}\caption{Look how pretty}\label{fig:look-how-pretty}\end{figure}
+
+(It seems that it needs to be styled with CSS to be visible in html.)
+
+\texttt{IX} and \texttt{NI}are mostly useful for translation to (La)TeX.
 
 \texttt{IX} makes an index entry from the text that follows it. \texttt{NI} puts a \texttt{\textbackslash noindent} in front of the line.
 

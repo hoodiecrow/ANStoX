@@ -135,9 +135,18 @@ def main ():
             continue
         if first == 'IX':
             continue
-        if first == 'IG' or first == 'IF':
+        if first == 'IG':
             print('')
-            print(f'\n<img src="{second[1:]}">')
+            print(f'<img src="{second[1:]}">')
+            continue
+        if first == 'IF':
+            fields = fields[2:]
+            caption = ' '.join(fields)
+            print('')
+            print('<figure>')
+            print(f'  <img src="{second[1:]}">')
+            print(f'  <figcaption>{caption}</figcaption>')
+            print('</figure>')
             continue
         if first == 'EM':
             fields = fields[1:]
