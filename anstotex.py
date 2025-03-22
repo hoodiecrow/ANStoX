@@ -1,5 +1,6 @@
 
 import re
+import dicttxt
 import fileinput
 
 baseURL = "https://github.com/hoodiecrow/ConsTcl"
@@ -22,12 +23,7 @@ w = re.compile('W\{([^{}]+)\}\{([^{}]+)\}')
 p = re.compile('P\{([^{}]+)\}\{([^{}]+)\}')
 
 def main ():
-    with open('dict.txt', 'r') as f:
-        dbtext = f.read()
-    db = {}
-    for line in dbtext.splitlines():
-        (key, val) = re.split(r'\s+->\s+', line)
-        db[key] = val
+    db = dicttxt.makedb()
     in_vb = 0
     in_cb = 0
     in_pr = 0
@@ -57,7 +53,7 @@ def main ():
             else:
                 second = ''
         if (first == 'VB('):
-            print('')
+            print()
             print(r'\begin{verbatim}')
             in_vb = 1
             continue
@@ -79,7 +75,7 @@ def main ():
                 (th, tds) = line.split(';')
             except ValueError:
                 print('FOO', line)
-            print('')
+            print()
             print(r"\noindent\begin{tabular}{ |p{1.9cm} p{8cm}| }")
             print(r"\hline")
             print(r"\rowcolor[HTML]{CCCCCC} \multicolumn{2}{|l|}{\bf ", end="")
@@ -99,7 +95,7 @@ def main ():
             str = ' '.join(fields)
             elt = r'\part{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             continue
@@ -108,7 +104,7 @@ def main ():
             str = ' '.join(fields)
             elt = r'\chapter{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             continue
@@ -122,7 +118,7 @@ def main ():
                 idx = r'\index{' + str + '}'
             elt = r'\section{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             print(idx)
@@ -139,7 +135,7 @@ def main ():
                 str = str.replace(k, v)
             elt = r'\subsection{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             print(idx)
@@ -154,7 +150,7 @@ def main ():
                 idx = r'\index{' + str + '}'
             elt = r'\subsubsection{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             print(idx)
@@ -164,7 +160,7 @@ def main ():
             str = ' '.join(fields)
             elt = r'\paragraph{' + str + '}'
             lbl = r'\label{' + makelabel(str) + '}'
-            print('')
+            print()
             print(elt)
             print(lbl)
             continue
@@ -172,13 +168,13 @@ def main ():
             print(r'\index{' + line[3:] + '}')
             continue
         if first == 'IG':
-            print('')
+            print()
             print(r"\includegraphics{" + second[1:] + "}")
             continue
         if first == 'IF':
             fields = fields[2:]
             caption = ' '.join(fields)
-            print('')
+            print()
             print(r"\begin{figure}[h!]", end="")
             print(r"\includegraphics{" + second[1:] + "}", end="")
             print(r"\captionsetup{labelformat=empty}", end="")
@@ -191,26 +187,26 @@ def main ():
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(r'\emph{' + str + '}')
             continue
         if first == 'KB':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(r'\texttt{' + str + '}')
             continue
         if first == 'NI':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(r"\noindent " + str)
             continue
         if first == 'CB(':
             in_cb = 1
-            print('')
+            print()
             print(r"\begin{lstlisting}")
             continue
         if first == 'CB)':
@@ -230,7 +226,7 @@ def main ():
             continue
         if first == 'IT':
             if not in_it:
-                print('')
+                print()
                 print(r"\begin{itemize}")
             in_it = 1
             fields = fields[1:]
@@ -244,7 +240,7 @@ def main ():
             continue
         if first == 'EN':
             if not in_en:
-                print('')
+                print()
                 print(r"\begin{enumerate}")
             in_en = 1
             fields = fields[1:]
@@ -258,7 +254,7 @@ def main ():
             continue
         if first == 'DL':
             if not in_dl:
-                print('')
+                print()
                 print(r"\begin{description}")
             in_dl = 1
             fields = fields[1:]

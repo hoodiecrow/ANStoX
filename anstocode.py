@@ -39,7 +39,7 @@ def main ():
         if in_cb:
             print(line)
             continue
-    print('')
+    print()
 
 
 main()

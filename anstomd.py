@@ -1,6 +1,7 @@
 
 import re
 import html
+import dicttxt
 import fileinput
 
 baseURL = "https://github.com/hoodiecrow/ConsTcl"
@@ -21,12 +22,7 @@ w = re.compile('W\{([^{}]+)\}\{([^{}]+)\}')
 p = re.compile('P\{([^{}]+)\}\{([^{}]+)\}')
 
 def main ():
-    with open('dict.txt', 'r') as f:
-        dbtext = f.read()
-    db = {}
-    for line in dbtext.splitlines():
-        (key, val) = re.split(r'\s+->\s+', line)
-        db[key] = val
+    db = dicttxt.makedb()
     in_vb = 0
     in_cb = 0
     in_pr = 0
@@ -90,19 +86,19 @@ def main ():
         if (h1.match(first)):
             fields[0] = "#"
             str = ' '.join(fields)
-            print('')
+            print()
             print(str)
             continue
         if (h2.match(first)):
             fields[0] = "##"
             str = ' '.join(fields)
-            print('')
+            print()
             print(str)
             continue
         if (h3.match(first)):
             fields[0] = "###"
             str = ' '.join(fields)
-            print('')
+            print()
             print(str)
             continue
         if (h4.match(first)):
@@ -110,31 +106,31 @@ def main ():
             str = ' '.join(fields)
             for k, v in {'"!': '!', '"@': '@', '"|': '|'}.items():
                 str = str.replace(k, v)
-            print('')
+            print()
             print(str)
             continue
         if (h5.match(first)):
             fields[0] = "#####"
             str = ' '.join(fields)
-            print('')
+            print()
             print(str)
             continue
         if (h6.match(first)):
             fields[0] = "######"
             str = ' '.join(fields)
-            print('')
+            print()
             print(str)
             continue
         if first == 'IX':
             continue
         if first == 'IG':
-            print('')
+            print()
             print(f'![#]({second[1:]})')
             continue
         if first == 'IF':
             fields = fields[2:]
             caption = ' '.join(fields)
-            print('')
+            print()
             print(f'![#]({second[1:]} "{caption}")')
             caption = ''
             continue
@@ -142,21 +138,21 @@ def main ():
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(f'_{str}_')
             continue
         if first == 'KB':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(f'``{str}``')
             continue
         if first == 'NI':
             fields = fields[1:]
             str = ' '.join(fields)
             str = render(str)
-            print('')
+            print()
             print(str)
             continue
         if first == 'CB(':
@@ -180,7 +176,7 @@ def main ():
             continue
         if first == 'IT':
             if not in_it:
-                print('')
+                print()
             in_it = 1
             fields[0] = '*'
             str = ' '.join(fields)
@@ -192,7 +188,7 @@ def main ():
             continue
         if first == 'EN':
             if not in_en:
-                print('')
+                print()
             in_en = 1
             fields[0] = '1.'
             str = ' '.join(fields)
@@ -204,7 +200,7 @@ def main ():
             continue
         if first == 'DL':
             if not in_dl:
-                print('')
+                print()
             in_dl = 1
             fields = fields[1:]
             str = ' '.join(fields)

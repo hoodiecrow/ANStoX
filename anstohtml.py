@@ -1,6 +1,7 @@
 
 import re
 import html
+import dicttxt
 import fileinput
 
 baseURL = "https://github.com/hoodiecrow/ConsTcl"
@@ -21,12 +22,7 @@ w = re.compile('W\{([^{}]+)\}\{([^{}]+)\}')
 p = re.compile('P\{([^{}]+)\}\{([^{}]+)\}')
 
 def main ():
-    with open('dict.txt', 'r') as f:
-        dbtext = f.read()
-    db = {}
-    for line in dbtext.splitlines():
-        (key, val) = re.split(r'\s+->\s+', line)
-        db[key] = val
+    db = dicttxt.makedb()
     in_vb = 0
     in_cb = 0
     in_pr = 0
@@ -47,7 +43,7 @@ def main ():
     print('  <link rel="stylesheet" href="ans.css">')
     print('</head>')
     print('<body>')
-    print('')
+    print()
     for line in fileinput.input():
         line = line.rstrip()
         if (re.match(modeline, line)):
@@ -98,19 +94,19 @@ def main ():
         if (h1.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            print('')
+            print()
             print('<h1>' + htmlify(str) + '</h1>')
             continue
         if (h2.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            print('')
+            print()
             print('<h2>' + htmlify(str) + '</h2>')
             continue
         if (h3.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            print('')
+            print()
             print('<h3>' + htmlify(str) + '</h3>')
             continue
         if (h4.match(first)):
@@ -118,31 +114,31 @@ def main ():
             str = ' '.join(fields)
             for k, v in {'"!': '!', '"@': '@', '"|': '|'}.items():
                 str = str.replace(k, v)
-            print('')
+            print()
             print('<h4>' + htmlify(str) + '</h4>')
             continue
         if (h5.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            print('')
+            print()
             print('<h5>' + htmlify(str) + '</h5>')
             continue
         if (h6.match(first)):
             fields = fields[1:]
             str = ' '.join(fields)
-            print('')
+            print()
             print('<h6>' + htmlify(str) + '</h6>')
             continue
         if first == 'IX':
             continue
         if first == 'IG':
-            print('')
+            print()
             print(f'<img src="{second[1:]}">')
             continue
         if first == 'IF':
             fields = fields[2:]
             caption = ' '.join(fields)
-            print('')
+            print()
             print('<figure>')
             print(f'  <img src="{second[1:]}">')
             print(f'  <figcaption>{caption}</figcaption>')
@@ -232,7 +228,7 @@ def main ():
             for field in fields:
                 collect(field)
     flushp()
-    print('')
+    print()
     print('</body>')
     print('</html>')
 
