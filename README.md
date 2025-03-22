@@ -275,6 +275,6 @@ W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
 
 ## dict.txt
 
-Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a `` dict.txt `` containing the text "`` foo -> bar ``" or something like that without any empty lines (or just take the `` dict.txt `` from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
+Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a `` dict.txt `` containing the text "`` foo -> bar ``" or something like that (or just take the `` dict.txt `` from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
 
 

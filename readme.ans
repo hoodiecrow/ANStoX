@@ -329,8 +329,8 @@ H2 dict.txt
 
 Is a file containing a dictionary that I use to construct prototype tables for
 procedures in my code. You will probably not need or want it, so just add a
-K{dict.txt} containing the text "K{foo  ->  bar}" or something like that without
-any empty lines (or just take the K{dict.txt} from the repository). With some
-editing of the scripts, the use for it can be removed. I still need it, so
-I'm not going to remove it myself.
+K{dict.txt} containing the text "K{foo  ->  bar}" or something like that (or
+just take the K{dict.txt} from the repository). With some editing of the
+scripts, the use for it can be removed. I still need it, so I'm not going to
+remove it myself.
 
