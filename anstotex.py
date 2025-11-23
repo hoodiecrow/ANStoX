@@ -78,8 +78,8 @@ def main ():
             print()
             print(r"\noindent\begin{tabular}{ |p{1.9cm} p{8cm}| }")
             print(r"\hline")
-            print(r"\rowcolor[HTML]{CCCCCC} \multicolumn{2}{|l|}{\bf ", end="")
-            print(f"{th}", end="")
+            print(r"\rowcolor[HTML]{CCCCCC} \multicolumn{2}{|l|}{\textbf", end="")
+            print(r"{" + th +"}", end="")
             print(r"} \\")
             for td1, td2 in zip(*[iter(tds.split())]*2):
                 td2 = db[td2]
