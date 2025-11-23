@@ -63,11 +63,11 @@ The `` PR `` tag is supposed to contain a single line with table header, semicol
 
 ```
 PR(
-my function;a foo -> foo
+my function;a foo -> bar
 PR)
 ```
 
-<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>bar</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
+<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>foo</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
 
 ### Code
 
