@@ -2,7 +2,7 @@
 import re
 
 def makedb ():
-    with open('dict.txt', 'r') as f:
+    with open('./src/dict.txt', 'r') as f:
         dbtext = f.read()
     db = {}
     for line in dbtext.splitlines():
