@@ -63,11 +63,11 @@ The `` PR `` tag is supposed to contain a single line with table header, semicol
 
 ```
 PR(
-my function;a foo -> bar
+my function;a foo -> foo
 PR)
 ```
 
-<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>foo</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
+<table border=1><thead><tr><th colspan=2 align="left">my function</th></tr></thead><tr><td>a</td><td>bar</td></tr><tr><td><i>Returns:</i></td><td>bar</td></tr></table>
 
 ### Code
 
@@ -273,8 +273,8 @@ W{Ann Arbor, Michigan}{Ann_Arbor,_Michigan}
 
 [Ann Arbor, Michigan](https://en.wikipedia.org/wiki/Ann_Arbor,_Michigan)
 
-## dict.txt
+## ./src/dict.txt
 
-Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a `` dict.txt `` containing the text "`` foo -> bar ``" or something like that (or just take the `` dict.txt `` from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
+Is a file containing a dictionary that I use to construct prototype tables for procedures in my code. You will probably not need or want it, so just add a `` ./src/dict.txt `` containing the text "`` foo -> bar ``" or something like that (or just take the `` ./src/dict.txt `` from the repository). With some editing of the scripts, the use for it can be removed. I still need it, so I'm not going to remove it myself.
 
 
