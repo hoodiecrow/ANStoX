@@ -6,7 +6,12 @@ modeline = r'[#;] v' + 'im:'
 
 def main ():
     in_vb = 0
-    in_cb = 0
+    in_zone = 0
+    begins = 'CB('
+    ends   = 'CB)'
+    preamble = ""
+    postamble = ""
+    print(preamble, end='\n')
     for line in fileinput.input():
         line = line.rstrip()
         if (re.match(modeline, line)):
@@ -30,17 +35,17 @@ def main ():
             continue
         if (in_vb):
             continue
-        if first == 'CB(':
-            in_cb = 1
+        if first == begins:
+            in_zone = 1
+            print("", end='\n')
             continue
-        if first == 'CB)':
-            in_cb = 0
+        if first == ends:
+            in_zone = 0
             continue
-        if in_cb:
-            print(line)
+        if in_zone:
+            print(line, end='\n')
             continue
-    print()
-
+    print(postamble, end='\n')
 
 main()
 
