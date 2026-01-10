@@ -1,0 +1,27 @@
+package require tcltest
+source constcl.tcl
+
+
+line to print =  ::tcltest::test initial-1.0 {try reg} -setup {::tcltest::test initial-1.0 {try reg} -setup {
+line to print =    set dr $::constcl::defreg  set dr $::constcl::defreg
+line to print =  } -body {} -body {
+line to print =    reg foo  reg foo
+line to print =    reg special bar  reg special bar
+line to print =    reg macro baz  reg macro baz
+line to print =    puts [lrange $::constcl::defreg end-5 end]  puts [lrange $::constcl::defreg end-5 end]
+line to print =  } -cleanup {} -cleanup {
+line to print =    set ::constcl::defreg $dr  set ::constcl::defreg $dr
+line to print =  } -output "197 {foo {VARIABLE ::constcl::foo}} 198 {bar {SPECIAL ::constcl::special-bar}} 199 {baz {SYNTAX ::constcl::expand-baz}}\n"} -output "197 {foo {VARIABLE ::constcl::foo}} 198 {bar {SPECIAL ::constcl::special-bar}} 199 {baz {SYNTAX ::constcl::expand-baz}}\n"
+line to print =  
+line to print =  ::tcltest::test initial-1.1 {try regvar} -setup {::tcltest::test initial-1.1 {try regvar} -setup {
+line to print =    set dr $::constcl::defreg  set dr $::constcl::defreg
+line to print =  } -body {} -body {
+line to print =    regvar foo bar  regvar foo bar
+line to print =    puts [lrange $::constcl::defreg end-1 end]  puts [lrange $::constcl::defreg end-1 end]
+line to print =  } -cleanup {} -cleanup {
+line to print =    set ::constcl::defreg $dr  set ::constcl::defreg $dr
+line to print =  } -output "197 {foo {VARIABLE bar}}\n"} -output "197 {foo {VARIABLE bar}}\n"
+
+::tcltest::cleanupTests
+return
+
