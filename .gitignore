@@ -1,2 +1,5 @@
 /__pycache__
 /__pycache__
+*.synctex(busy)
+*.log
+/__pycache__

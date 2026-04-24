@@ -1,0 +1,3 @@
+\usepackage{float}
+  \floatstyle{boxed}
+  \newfloat{pulledtext}{tbp}{pulledtext}
